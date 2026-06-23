@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冷蔵庫レシピ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&family=Mochiy+Pop+One&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  :root{
+    --bg:#F7F4EE;
+    --surface:#FFFFFF;
+    --ink:#2B2622;
+    --ink-soft:#6E665E;
+    --line:#E7E1D6;
+    --accent:#D9542B;
+    --accent-deep:#B23E1C;
+    --gold:#E0A52E;
+    --chip:#F0EADF;
+    --chip-ink:#5A5249;
+    --display:'Zen Kaku Gothic New',sans-serif;
+    --body:'Zen Kaku Gothic New',sans-serif;
+    --r:14px;
+    --shadow:0 1px 2px rgba(43,38,34,.04),0 4px 16px rgba(43,38,34,.06);
+    --shadow-lg:0 8px 40px rgba(43,38,34,.16);
+    --header-bg:linear-gradient(135deg,#D9542B,#E0A52E);
+    --header-ink:#FFF;
+    --hero-pattern:none;
+    --tag-r:999px;
+    --card-border:1px solid var(--line);
+  }
+
+  /* ===== マリオ ===== */
+  body.t-mario{
+    --bg:#5C94FC;
+    --surface:#FFFFFF;
+    --ink:#16213E;
+    --ink-soft:#46527A;
+    --line:#16213E;
+    --accent:#E52521;
+    --accent-deep:#B81815;
+    --gold:#FBD000;
+    --chip:#FFF7E0;
+    --chip-ink:#3A3320;
+    --display:'Mochiy Pop One',sans-serif;
+    --body:'Zen Kaku Gothic New',sans-serif;
+    --r:7px;
+    --shadow:3px 3px 0 rgba(22,33,62,.18);
+    --shadow-lg:6px 6px 0 rgba(22,33,62,.3);
+    --header-bg:#E52521;
+    --header-ink:#FFF;
+    --hero-pattern:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 14px,transparent 14px 28px);
+    --tag-r:6px;
+    --card-border:3px solid var(--line);
+  }
+  body.t-mario .chip,body.t-mario .card,body.t-mario .seg,
+  body.t-mario .theme-pill,body.t-mario .sortbtn{border-width:3px!important;border-style:solid;border-color:var(--line);}
+  body.t-mario .hero h1{text-shadow:3px 3px 0 rgba(22,33,62,.35);}
+
+  /* ===== ディズニー ===== */
+  body.t-disney{
+    --bg:#ECEAFB;
+    --surface:#FFFFFF;
+    --ink:#332A5E;
+    --ink-soft:#7B73A8;
+    --line:#E2DAF2;
+    --accent:#7048C4;
+    --accent-deep:#553399;
+    --gold:#E89AC7;
+    --chip:#F4EFFB;
+    --chip-ink:#5A4E86;
+    --display:'Zen Maru Gothic',sans-serif;
+    --body:'Zen Kaku Gothic New',sans-serif;
+    --r:22px;
+    --shadow:0 2px 8px rgba(112,72,196,.1),0 8px 30px rgba(112,72,196,.12);
+    --shadow-lg:0 16px 50px rgba(112,72,196,.28);
+    --header-bg:linear-gradient(135deg,#5A3AA0,#9B5FC8 60%,#E89AC7);
+    --header-ink:#FFF;
+    --hero-pattern:radial-gradient(circle at 18% 28%,rgba(255,255,255,.6) 0 2px,transparent 2px),radial-gradient(circle at 72% 62%,rgba(255,255,255,.5) 0 1.5px,transparent 1.5px),radial-gradient(circle at 44% 84%,rgba(255,255,255,.55) 0 2px,transparent 2px),radial-gradient(circle at 88% 20%,rgba(255,255,255,.45) 0 1.5px,transparent 1.5px);
+    --tag-r:999px;
+    --card-border:1px solid var(--line);
+  }
+  body.t-disney .hero h1{text-shadow:0 2px 10px rgba(40,25,80,.4);}
+
+  body{
+    font-family:var(--body);
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition:background .35s,color .35s;
+  }
+
+  /* ===== ヘッダー/ヒーロー ===== */
+  .hero{
+    position:relative;
+    background:var(--header-bg);
+    color:var(--header-ink);
+    padding:30px 22px 26px;
+    overflow:hidden;
+  }
+  .hero::after{content:"";position:absolute;inset:0;background-image:var(--hero-pattern);pointer-events:none;}
+  .hero-inner{position:relative;z-index:1;max-width:680px;margin:0 auto;}
+  .hero .kicker{font-size:11px;letter-spacing:3px;text-transform:uppercase;opacity:.85;font-weight:700;margin-bottom:8px;}
+  .hero h1{font-family:var(--display);font-size:30px;line-height:1.15;font-weight:900;letter-spacing:-.5px;}
+  .hero p{font-size:13.5px;opacity:.92;margin-top:8px;max-width:34em;}
+
+  /* テーマ切替ピル */
+  .theme-pills{display:flex;gap:8px;margin-top:18px;}
+  .theme-pill{
+    padding:7px 14px;border-radius:var(--r);
+    background:rgba(255,255,255,.16);color:var(--header-ink);
+    border:1.5px solid rgba(255,255,255,.35);
+    font-family:var(--display);font-size:12.5px;cursor:pointer;
+    transition:all .15s;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(4px);
+  }
+  .theme-pill.on{background:#fff;color:var(--accent);border-color:#fff;}
+
+  .wrap{max-width:680px;margin:0 auto;padding:0 16px 120px;}
+
+  /* 別ページへのリンクバナー */
+  .xlink{display:flex;align-items:center;gap:13px;width:100%;margin-top:20px;background:var(--surface);border:var(--card-border);border-radius:var(--r);padding:14px 16px;cursor:pointer;text-decoration:none;color:inherit;box-shadow:var(--shadow);transition:transform .1s;-webkit-tap-highlight-color:transparent;}
+  .xlink:active{transform:scale(.99);}
+  .xlink-emoji{font-size:30px;flex-shrink:0;}
+  .xlink-body{flex:1;min-width:0;}
+  .xlink-k{font-size:10.5px;letter-spacing:1.5px;font-weight:700;color:var(--accent);text-transform:uppercase;}
+  .xlink-t{font-family:var(--display);font-size:16px;font-weight:900;letter-spacing:-.3px;margin-top:1px;}
+  .xlink-s{font-size:11.5px;color:var(--ink-soft);margin-top:2px;line-height:1.5;}
+  .xlink-arrow{font-size:20px;color:var(--accent);font-weight:700;flex-shrink:0;}
+
+  /* ヒーロー右上のアクションアイコン */
+  .hero-actions{position:absolute;top:16px;right:16px;z-index:3;display:flex;gap:9px;}
+  .hero-act{position:relative;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(6px);cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:transform .12s,background .15s;}
+  .hero-act:active{transform:scale(.92);}
+  .hero-act:hover{background:rgba(255,255,255,.28);}
+  .ha-emoji{font-size:21px;line-height:1;}
+  .ha-badge{position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;border-radius:99px;background:#fff;color:var(--accent);font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 1px 4px rgba(0,0,0,.25);}
+  body.t-mario .hero-act{border-width:2px;border-radius:8px;}
+  body.t-mario .ha-badge{color:var(--accent);border:2px solid var(--accent);}
+
+  /* 汎用シート(メモ/マイレシピ/フォーム共通) */
+  .sheet-bg{position:fixed;inset:0;background:rgba(30,24,20,.5);backdrop-filter:blur(3px);z-index:60;display:none;opacity:0;transition:opacity .25s;}
+  .sheet-bg.show{display:block;opacity:1;}
+  .sheet{position:fixed;left:0;right:0;bottom:0;max-height:94vh;background:var(--bg);border-radius:24px 24px 0 0;z-index:61;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1),visibility .3s;overflow:hidden;display:flex;flex-direction:column;visibility:hidden;}
+  .sheet.show{transform:translateY(0);visibility:visible;}
+  .sheet-in{max-width:680px;margin:0 auto;width:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .sheet-handle{width:40px;height:5px;border-radius:99px;background:var(--line);margin:10px auto 4px;flex-shrink:0;}
+  .sheet-head{display:flex;align-items:center;gap:10px;padding:8px 20px 14px;border-bottom:1.5px solid var(--line);flex-shrink:0;}
+  .sheet-title{font-family:var(--display);font-size:19px;font-weight:900;letter-spacing:-.3px;}
+  .sheet-title .cnt{font-size:13px;color:var(--ink-soft);font-weight:700;margin-left:6px;}
+  .sheet-close{margin-left:auto;width:32px;height:32px;border-radius:50%;border:none;background:var(--chip);color:var(--ink);font-size:17px;cursor:pointer;}
+  .sheet-scroll{overflow-y:auto;padding:16px 20px 30px;}
+
+  /* 買い物メモ */
+  .memo-add{display:flex;gap:8px;margin-bottom:16px;}
+  .memo-input{flex:1;border:var(--card-border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--ink);outline:none;}
+  .memo-input:focus{border-color:var(--accent);}
+  .memo-addbtn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:0 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .memo-item{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow);}
+  body.t-mario .memo-item{border:2px solid var(--line);}
+  .memo-check{width:24px;height:24px;border-radius:6px;border:2px solid var(--line);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;-webkit-tap-highlight-color:transparent;transition:all .12s;}
+  .memo-check.on{background:var(--accent);border-color:var(--accent);}
+  .memo-text{flex:1;font-size:14px;}
+  .memo-item.checked .memo-text{text-decoration:line-through;color:var(--ink-soft);}
+  .memo-del{background:none;border:none;color:var(--ink-soft);font-size:18px;cursor:pointer;padding:2px 4px;-webkit-tap-highlight-color:transparent;}
+  .memo-tools{display:flex;gap:8px;margin-top:14px;}
+  .memo-tool{flex:1;background:var(--chip);color:var(--chip-ink);border:none;border-radius:10px;padding:10px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .memo-empty{text-align:center;color:var(--ink-soft);padding:36px 20px;}
+  .memo-empty .big{font-size:38px;margin-bottom:12px;}
+  .memo-empty .sub{font-size:13px;line-height:1.7;}
+
+  /* マイレシピ一覧 */
+  .myrec-newbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:14px;font-family:var(--display);font-size:15px;font-weight:900;cursor:pointer;margin-bottom:16px;box-shadow:var(--shadow);-webkit-tap-highlight-color:transparent;}
+  .myrec-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;margin-bottom:10px;box-shadow:var(--shadow);}
+  body.t-mario .myrec-card{border:3px solid var(--line);}
+  .myrec-top{display:flex;align-items:center;gap:11px;}
+  .myrec-emoji{font-size:28px;}
+  .myrec-h{flex:1;min-width:0;}
+  .myrec-name{font-family:var(--display);font-size:16px;font-weight:900;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .myrec-badge{font-size:9.5px;font-weight:700;border-radius:4px;padding:2px 6px;}
+  .myrec-badge.pub{background:#7BA06B;color:#fff;}
+  .myrec-badge.priv{background:var(--chip);color:var(--ink-soft);}
+  .myrec-meta{font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
+  .myrec-acts{display:flex;gap:8px;margin-top:12px;}
+  .myrec-act{flex:1;background:var(--chip);color:var(--chip-ink);border:none;border-radius:9px;padding:9px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .myrec-act.danger{color:var(--accent);}
+  .myrec-act.cook{background:var(--accent);color:#fff;}
+
+  /* レシピ登録フォーム */
+  .form-group{margin-bottom:18px;}
+  .form-label{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+  .form-label .req{font-size:10px;color:#fff;background:var(--accent);border-radius:4px;padding:1px 6px;}
+  .form-label .opt{font-size:10px;color:var(--ink-soft);background:var(--chip);border-radius:4px;padding:1px 6px;}
+  .form-input{width:100%;border:var(--card-border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--ink);outline:none;}
+  .form-input:focus{border-color:var(--accent);}
+  textarea.form-input{resize:vertical;min-height:60px;line-height:1.6;}
+  .emoji-pick{display:flex;flex-wrap:wrap;gap:6px;}
+  .emoji-opt{width:42px;height:42px;border-radius:10px;border:2px solid var(--line);background:var(--surface);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:all .1s;}
+  .emoji-opt.on{border-color:var(--accent);background:var(--chip);}
+  .genre-pick{display:flex;flex-wrap:wrap;gap:6px;}
+  .genre-opt{padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .genre-opt.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .row-list{display:flex;flex-direction:column;gap:8px;}
+  .ing-edit-row{display:flex;gap:6px;align-items:center;}
+  .ing-edit-row .item{flex:2;}
+  .ing-edit-row .qty{flex:1;min-width:0;}
+  .ing-edit-row .unit{flex:1;min-width:0;}
+  .row-del{background:var(--chip);border:none;border-radius:8px;width:34px;height:38px;flex-shrink:0;color:var(--ink-soft);font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .step-edit-row{display:flex;gap:6px;align-items:flex-start;}
+  .step-edit-row .step-n{flex-shrink:0;width:26px;height:38px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:900;color:var(--accent);}
+  .step-edit-row .form-input{flex:1;}
+  .add-row{background:var(--chip);color:var(--chip-ink);border:none;border-radius:9px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;width:100%;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .pub-toggle{display:flex;align-items:center;gap:12px;background:var(--surface);border:var(--card-border);border-radius:var(--r);padding:14px 15px;box-shadow:var(--shadow);}
+  .pub-info{flex:1;}
+  .pub-t{font-size:14px;font-weight:700;}
+  .pub-s{font-size:11px;color:var(--ink-soft);margin-top:2px;line-height:1.5;}
+  .toggle{width:48px;height:28px;border-radius:99px;background:var(--line);position:relative;cursor:pointer;flex-shrink:0;transition:background .2s;-webkit-tap-highlight-color:transparent;}
+  .toggle.on{background:#7BA06B;}
+  .toggle::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+  .toggle.on::after{transform:translateX(20px);}
+  .form-actions{display:flex;gap:10px;margin-top:8px;position:sticky;bottom:0;background:var(--bg);padding:12px 0 4px;}
+  .form-btn{flex:1;border:none;border-radius:var(--r);padding:14px;font-family:var(--display);font-size:15px;font-weight:900;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .form-btn.save{background:var(--accent);color:#fff;}
+  .form-btn.cancel{background:var(--chip);color:var(--ink-soft);flex:0 0 90px;}
+  .form-err{background:#fdecea;color:#c0392b;border-radius:9px;padding:10px 13px;font-size:12.5px;margin-bottom:14px;display:none;}
+  body.t-disney .form-err{background:#f9ecf3;}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#2A2521;color:#fff;padding:13px 22px;border-radius:99px;font-size:13px;font-weight:700;z-index:90;transition:transform .3s;box-shadow:var(--shadow-lg);}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+
+  /* アカウント画面 */
+  .acc-intro{font-size:13px;color:var(--ink-soft);line-height:1.7;margin-bottom:18px;background:var(--chip);border-radius:12px;padding:14px;}
+  .acc-status{display:flex;align-items:center;gap:13px;background:var(--surface);border:var(--card-border);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);margin-bottom:14px;}
+  .acc-avatar{width:46px;height:46px;border-radius:50%;background:#7BA06B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;flex-shrink:0;}
+  .acc-info{flex:1;min-width:0;}
+  .acc-label{font-size:11px;color:var(--ink-soft);font-weight:700;}
+  .acc-email{font-size:15px;font-weight:700;word-break:break-all;}
+  .acc-note{font-size:12px;color:var(--ink-soft);line-height:1.6;margin-bottom:16px;padding:0 2px;}
+  .acc-btn{width:100%;background:var(--surface);border:var(--card-border);border-radius:var(--r);padding:14px;font-family:var(--display);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;box-shadow:var(--shadow);-webkit-tap-highlight-color:transparent;color:inherit;}
+  .acc-btn:active{transform:scale(.98);}
+  .acc-btn.login{background:var(--accent);color:#fff;}
+  .acc-btn.signup{background:var(--surface);color:var(--accent);border:2px solid var(--accent);}
+  .acc-btn.logout{color:var(--accent);}
+  .acc-btn.upload{background:#7BA06B;color:#fff;font-size:13px;}
+  .auth-btns{display:flex;gap:10px;}
+  .auth-btns .acc-btn{margin-bottom:0;}
+
+  /* 認証画面(分割) */
+  .auth-back{background:none;border:none;color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;padding:4px 2px;margin-bottom:6px;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .auth-h{font-family:var(--display);font-size:20px;font-weight:900;margin-bottom:18px;letter-spacing:-.3px;}
+  .pw-rules{background:var(--chip);border-radius:11px;padding:13px 15px;margin-bottom:14px;}
+  .pw-rule{font-size:12.5px;color:var(--ink-soft);line-height:1.9;transition:color .15s;}
+  .pw-rule.ok{color:#4a9a3a;font-weight:700;}
+  .pw-rule.ok::before{content:"✓ ";}
+  body.t-disney .pw-rule.ok{color:#6b9e4f;}
+  .verify-info{font-size:13px;color:var(--ink-soft);line-height:1.7;margin-bottom:18px;background:var(--chip);border-radius:11px;padding:14px;}
+  .code-input{font-size:28px;text-align:center;letter-spacing:12px;font-family:var(--display);font-weight:900;padding:14px;}
+  .code-input::placeholder{letter-spacing:8px;color:var(--line);}
+  .acc-hint{font-size:11.5px;color:var(--ink-soft);line-height:1.6;margin-top:14px;padding:0 2px;}
+
+  /* マイレシピのクラウドバナー */
+  .myrec-cloud{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;font-weight:700;border-radius:11px;padding:11px 13px;margin-bottom:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .myrec-cloud.on{background:#eaf3e6;color:#4a7a3a;}
+  .myrec-cloud.off{background:var(--chip);color:var(--chip-ink);}
+  body.t-disney .myrec-cloud.on{background:#ede8f7;color:#6b4f9e;}
+  .mc-link{margin-left:auto;color:var(--accent);font-weight:700;}
+
+  /* みんなのレシピ */
+  .pub-card{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:9px;box-shadow:var(--shadow);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  body.t-mario .pub-card{border:2px solid var(--line);}
+  .pub-card:active{transform:scale(.99);}
+  .pub-emoji{font-size:28px;flex-shrink:0;}
+  .pub-body{flex:1;min-width:0;}
+  .pub-name{font-family:var(--display);font-size:15.5px;font-weight:900;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .pub-mine{font-size:9.5px;font-weight:700;background:#7BA06B;color:#fff;border-radius:4px;padding:2px 6px;}
+  .pub-meta{font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
+  .pub-arrow{font-size:22px;color:var(--ink-soft);flex-shrink:0;}
+
+  /* セクション見出し */
+  .sec-head{display:flex;align-items:baseline;gap:10px;margin:30px 2px 14px;}
+  .sec-head .n{font-family:var(--display);font-size:13px;color:var(--accent);font-weight:900;letter-spacing:1px;}
+  .sec-head .t{font-size:14px;font-weight:700;}
+  .sec-head .hint{font-size:11.5px;color:var(--ink-soft);margin-left:auto;}
+
+  /* 材料カテゴリ */
+  .cat{margin-bottom:16px;}
+  .cat-name{font-size:13.5px;font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:7px;}
+  .cat-name .ic{font-size:16px;}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;}
+  .chip{
+    padding:8px 14px;border-radius:var(--tag-r);
+    background:var(--chip);color:var(--chip-ink);
+    font-size:13px;font-weight:500;cursor:pointer;
+    border:1.5px solid transparent;user-select:none;
+    transition:transform .1s,background .15s,color .15s,border-color .15s;
+    -webkit-tap-highlight-color:transparent;white-space:nowrap;
+  }
+  .chip:active{transform:scale(.94);}
+  .chip.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:var(--shadow);}
+  .chip.expander::after{content:" ▾";font-size:10px;opacity:.7;}
+  .chip.expander.open::after{content:" ▴";}
+
+  .subchips{margin:9px 0 0 6px;padding-left:13px;border-left:2px dashed var(--line);display:none;}
+  .subchips.open{display:block;}
+  .subchips .lab{font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;}
+
+  /* ===== コントロールバー(人前/ソート) — 結果表示時のみ ===== */
+  .controls{display:none;margin:6px 0 4px;flex-direction:column;gap:14px;}
+  .controls.show{display:flex;}
+
+  .panel{
+    background:var(--surface);border:var(--card-border);border-radius:var(--r);
+    padding:14px 16px;box-shadow:var(--shadow);
+  }
+  .panel-title{font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:11px;letter-spacing:.5px;display:flex;align-items:center;gap:8px;}
+
+  /* 人前スライダー */
+  .serv-row{display:flex;align-items:center;gap:14px;}
+  .serv-val{font-family:var(--display);font-size:26px;font-weight:900;color:var(--accent);min-width:78px;}
+  .serv-val small{font-size:13px;font-weight:700;color:var(--ink-soft);margin-left:2px;}
+  .slider-wrap{flex:1;min-width:0;}
+  .slider{width:100%;display:block;-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;background:var(--line);outline:none;margin:0;}
+  .slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.2);transition:transform .1s;}
+  .slider::-webkit-slider-thumb:active{transform:scale(1.15);}
+  .slider::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.2);}
+  /* 目盛り: つまみ半径(13px)分だけ左右をインセットしてつまみ中心と一致させる */
+  .serv-ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-soft);margin-top:7px;padding:0 13px;}
+  .serv-ticks span{position:relative;width:0;display:flex;justify-content:center;}
+
+  /* ソート */
+  .sort-row{display:flex;flex-wrap:wrap;gap:7px;align-items:center;}
+  .sortbtn{
+    padding:7px 13px;border-radius:99px;background:var(--chip);color:var(--chip-ink);
+    border:1.5px solid transparent;font-size:12.5px;font-weight:500;cursor:pointer;font-family:inherit;
+    -webkit-tap-highlight-color:transparent;transition:all .12s;display:inline-flex;align-items:center;gap:4px;
+  }
+  .sortbtn.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .sortbtn .ar{font-size:10px;opacity:.85;}
+  .fav-toggle{margin-left:auto;}
+  .fav-toggle.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  /* ===== 結果 ===== */
+  .results{margin-top:18px;}
+  .result-meta{font-size:12.5px;color:var(--ink-soft);margin:0 2px 14px;}
+  .result-meta b{color:var(--accent);font-size:16px;font-family:var(--display);}
+  .result-meta .q{opacity:.8;}
+
+  /* 料理タイプのタブ(ジャンル絞り込みとは別軸) */
+  .type-tabs-outer{position:relative;margin:0 -16px 16px;}
+  .type-tabs-outer::after{content:"";position:absolute;right:0;top:0;bottom:2px;width:28px;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none;}
+  .type-tabs{display:flex;gap:4px;padding:0 16px 2px;overflow-x:auto;border-bottom:2px solid var(--line);scrollbar-width:none;}
+  .type-tabs::-webkit-scrollbar{display:none;}
+  .ttab{position:relative;padding:10px 14px 12px;background:none;border:none;font-family:var(--display);font-size:14px;font-weight:700;color:var(--ink-soft);cursor:pointer;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:color .15s;}
+  .ttab .cnt{font-size:11px;font-weight:600;opacity:.6;margin-left:3px;}
+  .ttab.on{color:var(--accent);}
+  .ttab.on::after{content:"";position:absolute;left:8px;right:8px;bottom:-2px;height:3px;background:var(--accent);border-radius:3px 3px 0 0;}
+  body.t-mario .ttab.on::after{height:4px;}
+
+  .genre-filter{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 16px;}
+  .gf-lab{font-size:11.5px;color:var(--ink-soft);font-weight:600;margin-right:2px;}
+  .gchip{padding:5px 12px;border-radius:99px;background:var(--surface);border:1.5px solid var(--line);color:var(--ink-soft);font-size:12px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .12s;}
+  .gchip.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  body.t-mario .gchip{border-width:2px;}
+
+  .card{
+    background:var(--surface);border:var(--card-border);border-radius:var(--r);
+    padding:0;box-shadow:var(--shadow);margin-bottom:13px;overflow:hidden;
+    transition:transform .12s,box-shadow .2s;cursor:pointer;position:relative;
+  }
+  .card:active{transform:scale(.99);}
+  .card-body{padding:15px 16px;}
+  .card-top{display:flex;align-items:flex-start;gap:11px;}
+  .card-emoji{font-size:30px;line-height:1;flex-shrink:0;margin-top:2px;}
+  .card-h{flex:1;min-width:0;padding-right:38px;}
+  .card-name{font-family:var(--display);font-size:17.5px;font-weight:900;letter-spacing:-.3px;}
+  .card-genre{display:inline-block;font-size:10.5px;font-weight:700;color:var(--accent);background:var(--chip);border-radius:5px;padding:1px 7px;margin-top:4px;}
+  .fav-btn{position:absolute;top:13px;right:13px;width:34px;height:34px;border-radius:50%;border:none;background:var(--chip);color:var(--ink-soft);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s;-webkit-tap-highlight-color:transparent;z-index:2;}
+  .fav-btn.on{background:#ffe3ec;color:#e34a7a;}
+  body.t-mario .fav-btn{border:2px solid var(--line);}
+
+  .card-stats{display:flex;gap:6px;margin-top:13px;flex-wrap:wrap;}
+  .stat{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--chip-ink);background:var(--chip);border-radius:7px;padding:4px 9px;}
+  .stat .lab{color:var(--ink-soft);font-weight:500;}
+  .stat.cost{color:var(--accent-deep);}
+  .diff-dots{letter-spacing:1px;}
+
+  .card-uses{margin-top:11px;font-size:11.5px;color:var(--ink-soft);line-height:1.7;}
+  .card-uses .u{display:inline-block;background:var(--chip);border-radius:6px;padding:1px 7px;margin:2px 3px 0 0;}
+  .card-uses .u.hit{background:var(--accent);color:#fff;}
+
+  /* あと1つ枠 */
+  .almost-head{font-size:13px;font-weight:700;margin:26px 2px 12px;color:var(--ink-soft);display:flex;align-items:center;gap:7px;}
+  .almost-card .card-name{font-size:15.5px;}
+  .almost-miss{font-size:12px;color:var(--accent-deep);margin-top:9px;font-weight:600;}
+  .almost-miss .add{background:#fff0e9;border-radius:6px;padding:2px 8px;}
+  .mini-memo{background:var(--accent);color:#fff;border:none;border-radius:99px;font-size:10.5px;font-weight:700;padding:3px 9px;margin-left:7px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;vertical-align:middle;}
+  body.t-disney .almost-miss .add{background:#f3ecfb;}
+  body.t-mario .almost-miss .add{background:#fff7e0;border:2px solid var(--line);}
+
+  /* 空状態 */
+  .empty{text-align:center;padding:44px 20px;color:var(--ink-soft);}
+  .empty .big{font-size:40px;margin-bottom:14px;}
+  .empty .ttl{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+  .empty .sub{font-size:13px;line-height:1.8;max-width:24em;margin:0 auto;}
+
+  /* ===== 固定フッターバー ===== */
+  .dock{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:40;transition:transform .25s,opacity .25s;}
+  .dock.hide{transform:translateY(120%);opacity:0;pointer-events:none;}
+  .dock-inner{max-width:680px;margin:0 auto;background:var(--ink);color:#fff;border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-lg);}
+  body.t-mario .dock-inner{border:3px solid #fff;}
+  .dock-info{flex:1;min-width:0;}
+  .dock-count{font-size:11px;opacity:.7;}
+  .dock-items{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gold);}
+  .dock-btn{background:var(--accent);color:#fff;border:none;border-radius:calc(var(--r) - 4px);padding:11px 20px;font-family:var(--display);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:transform .1s,background .15s;-webkit-tap-highlight-color:transparent;}
+  .dock-btn:active{transform:scale(.95);}
+  .dock-clear{background:none;border:none;color:rgba(255,255,255,.6);font-size:11px;cursor:pointer;text-decoration:underline;padding:4px;font-family:inherit;}
+
+  /* ===== レシピ詳細モーダル ===== */
+  .modal-bg{position:fixed;inset:0;background:rgba(30,24,20,.5);backdrop-filter:blur(3px);z-index:60;display:none;opacity:0;transition:opacity .25s;}
+  .modal-bg.show{display:block;opacity:1;}
+  .modal{position:fixed;left:0;right:0;bottom:0;max-height:92vh;background:var(--bg);border-radius:24px 24px 0 0;z-index:61;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1),visibility .3s;overflow:hidden;display:flex;flex-direction:column;visibility:hidden;}
+  .modal.show{transform:translateY(0);visibility:visible;}
+  .modal-inner{max-width:680px;margin:0 auto;width:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .modal-handle{width:40px;height:5px;border-radius:99px;background:var(--line);margin:10px auto 4px;flex-shrink:0;}
+  .modal-scroll{overflow-y:auto;padding:8px 20px 40px;-webkit-overflow-scrolling:touch;}
+
+  .m-head{display:flex;align-items:flex-start;gap:13px;padding:10px 0 16px;border-bottom:1.5px solid var(--line);}
+  .m-emoji{font-size:42px;line-height:1;}
+  .m-title{font-family:var(--display);font-size:23px;font-weight:900;letter-spacing:-.5px;line-height:1.2;}
+  .m-genre{font-size:11px;font-weight:700;color:var(--accent);background:var(--chip);border-radius:6px;padding:2px 9px;display:inline-block;margin-top:6px;}
+  .m-close{margin-left:auto;width:34px;height:34px;border-radius:50%;border:none;background:var(--chip);color:var(--ink);font-size:18px;cursor:pointer;flex-shrink:0;}
+
+  .m-stats{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0;}
+  .m-stat{flex:1;min-width:70px;background:var(--surface);border:var(--card-border);border-radius:var(--r);padding:11px 10px;text-align:center;box-shadow:var(--shadow);}
+  .m-stat .v{font-family:var(--display);font-size:18px;font-weight:900;color:var(--accent);}
+  .m-stat .l{font-size:10.5px;color:var(--ink-soft);margin-top:2px;}
+
+  /* 人前ミニスライダー(モーダル内) */
+  .m-serv{background:var(--surface);border:var(--card-border);border-radius:var(--r);padding:13px 15px;margin-bottom:18px;box-shadow:var(--shadow);}
+  .m-serv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .m-serv-lab{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+  .m-serv-val{font-family:var(--display);font-size:20px;font-weight:900;color:var(--accent);}
+
+  .m-sec-t{font-family:var(--display);font-size:15px;font-weight:900;margin:20px 0 11px;display:flex;align-items:center;gap:7px;}
+  .m-sec-t::before{content:"";width:4px;height:16px;background:var(--accent);border-radius:2px;}
+
+  .ing-list{background:var(--surface);border:var(--card-border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+  .ing-row{display:flex;justify-content:space-between;align-items:center;padding:11px 15px;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .ing-row:last-child{border-bottom:none;}
+  .ing-row.hit{background:linear-gradient(90deg,rgba(217,84,43,.07),transparent);}
+  .ing-right{display:flex;align-items:center;gap:9px;flex-shrink:0;}
+  .ing-memo{background:var(--chip);color:var(--accent);border:1px solid var(--accent);border-radius:99px;font-size:10.5px;font-weight:700;padding:3px 9px;cursor:pointer;font-family:inherit;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
+  body.t-mario .ing-memo{border-width:2px;}
+  .ing-name{font-weight:500;}
+  .ing-name .badge{font-size:9.5px;color:#fff;background:var(--accent);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;}
+  .ing-qty{font-family:var(--display);font-weight:700;color:var(--ink);white-space:nowrap;}
+  .ing-qty.none{color:var(--ink-soft);font-size:12px;}
+
+  .step-list{counter-reset:st;}
+  .step{display:flex;gap:13px;padding:4px 0 16px;position:relative;}
+  .step::before{counter-increment:st;content:counter(st);flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--display);font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+  .step-txt{font-size:13.5px;line-height:1.7;padding-top:3px;flex:1;}
+  .step:not(:last-child)::after{content:"";position:absolute;left:13.5px;top:30px;bottom:4px;width:1.5px;background:var(--line);}
+
+  .tips{background:var(--chip);border-radius:var(--r);padding:13px 15px;margin-top:8px;display:flex;gap:10px;}
+  body.t-mario .tips{border:3px solid var(--line);}
+  .tips .ic{font-size:16px;flex-shrink:0;}
+  .tips-txt{font-size:12.5px;line-height:1.7;color:var(--chip-ink);}
+
+  .m-cost-note{font-size:11px;color:var(--ink-soft);text-align:center;margin-top:18px;line-height:1.6;opacity:.85;}
+
+  @media(min-width:520px){
+    .m-stat{min-width:0;}
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ====== Supabase 接続設定 ====== */
+const SUPABASE_URL = 'https://srldpubptxqvzmwgvlev.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNybGRwdWJwdHhxdnptd2d2bGV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNjM0MzgsImV4cCI6MjA5NzYzOTQzOH0.ECZGTYV4QarwUVpzNic6YX_zSs_5TlvI74cCZcCKubg';
+let supa = null;
+let currentUser = null;
+let cloudRecipes = null;
+function initSupabase(){
+  try{
+    if(window.supabase && window.supabase.createClient){
+      supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      return true;
+    }
+  }catch(e){ console.warn('Supabase init失敗', e); }
+  return false;
+}
+</script>
+</head>
+<body class="t-plain">
+
+  <header class="hero">
+    <div class="hero-actions">
+      <button class="hero-act" onclick="openAccount()" aria-label="アカウント">
+        <span class="ha-emoji" id="accountIcon">👤</span>
+      </button>
+      <button class="hero-act" onclick="openMemo()" aria-label="買い物メモ">
+        <span class="ha-emoji">🛒</span>
+        <span class="ha-badge" id="memoBadge" style="display:none;">0</span>
+      </button>
+      <button class="hero-act" onclick="openMyRecipes()" aria-label="マイレシピ">
+        <span class="ha-emoji">📝</span>
+        <span class="ha-badge" id="myrecBadge" style="display:none;">0</span>
+      </button>
+    </div>
+    <div class="hero-inner">
+      <div class="kicker">FRIDGE TO TABLE</div>
+      <h1 id="heroTitle">冷蔵庫レシピ</h1>
+      <p id="heroSub">家にある材料を選ぶだけ。作れる料理と分量・費用・作り方が見つかります。</p>
+      <div class="theme-pills">
+        <button class="theme-pill on" data-t="plain" onclick="setTheme('plain')">標準</button>
+        <button class="theme-pill" data-t="mario" onclick="setTheme('mario')">マリオ風</button>
+        <button class="theme-pill" data-t="disney" onclick="setTheme('disney')">ディズニー風</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <a class="xlink" href="teishoku-recipe.html">
+      <span class="xlink-emoji">🍱</span>
+      <span class="xlink-body">
+        <span class="xlink-k">別ページ</span>
+        <span class="xlink-t">定食レシピを見る</span>
+        <span class="xlink-s">ご飯・汁物・主菜・副菜の献立まるごと。効率的な段取りつき</span>
+      </span>
+      <span class="xlink-arrow">→</span>
+    </a>
+
+    <div class="sec-head">
+      <span class="n">STEP 1</span>
+      <span class="t">材料を選ぶ</span>
+      <span class="hint">使いたいものだけでOK</span>
+    </div>
+
+    <div id="cats"></div>
+
+    <div class="controls" id="controls">
+      <div class="panel">
+        <div class="panel-title">👥 何人前で作る？</div>
+        <div class="serv-row">
+          <div class="serv-val"><span id="servNum">2</span><small>人前</small></div>
+          <div class="slider-wrap">
+            <input type="range" class="slider" id="servSlider" min="1" max="10" value="2" step="1">
+            <div class="serv-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">↕ 並び替え</div>
+        <div class="sort-row" id="sortRow">
+          <button class="sortbtn on" data-sort="match">おすすめ</button>
+          <button class="sortbtn" data-sort="cost">安い<span class="ar"></span></button>
+          <button class="sortbtn" data-sort="time">早い<span class="ar"></span></button>
+          <button class="sortbtn" data-sort="difficulty">簡単<span class="ar"></span></button>
+          <button class="sortbtn" data-sort="kcal">カロリー<span class="ar"></span></button>
+          <button class="sortbtn fav-toggle" id="favToggle">♡ お気に入り</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="results" id="results" style="display:none;">
+      <div class="sec-head">
+        <span class="n">STEP 2</span>
+        <span class="t">作れる料理</span>
+      </div>
+      <div class="type-tabs-outer"><div class="type-tabs" id="typeTabs"></div></div>
+      <div class="result-meta" id="resultMeta"></div>
+      <div class="genre-filter" id="genreFilter"></div>
+      <div id="cardList"></div>
+      <div id="almostWrap"></div>
+    </div>
+
+  </div>
+
+  <div class="dock hide" id="dock">
+    <div class="dock-inner">
+      <div class="dock-info">
+        <div class="dock-count" id="dockCount">材料を選択</div>
+        <div class="dock-items" id="dockItems"></div>
+      </div>
+      <button class="dock-clear" onclick="clearAll()">クリア</button>
+      <button class="dock-btn" id="dockBtn" onclick="runSearch()">さがす</button>
+    </div>
+  </div>
+
+  <!-- モーダル -->
+  <div class="modal-bg" id="modalBg" onclick="closeModal()"></div>
+  <div class="modal" id="modal">
+    <div class="modal-inner">
+      <div class="modal-handle"></div>
+      <div class="modal-scroll" id="modalScroll"></div>
+    </div>
+  </div>
+
+  <!-- 買い物メモ シート -->
+  <div class="sheet-bg" id="memoBg" onclick="closeMemo()"></div>
+  <div class="sheet" id="memoSheet">
+    <div class="sheet-in">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <span class="sheet-title">🛒 買い物メモ<span class="cnt" id="memoCnt"></span></span>
+        <button class="sheet-close" onclick="closeMemo()">✕</button>
+      </div>
+      <div class="sheet-scroll" id="memoScroll"></div>
+    </div>
+  </div>
+
+  <!-- マイレシピ一覧 シート -->
+  <div class="sheet-bg" id="myrecBg" onclick="closeMyRecipes()"></div>
+  <div class="sheet" id="myrecSheet">
+    <div class="sheet-in">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <span class="sheet-title">📝 マイレシピ<span class="cnt" id="myrecCnt"></span></span>
+        <button class="sheet-close" onclick="closeMyRecipes()">✕</button>
+      </div>
+      <div class="sheet-scroll" id="myrecScroll"></div>
+    </div>
+  </div>
+
+  <!-- レシピ登録フォーム シート -->
+  <div class="sheet-bg" id="formBg" onclick="closeForm()"></div>
+  <div class="sheet" id="formSheet">
+    <div class="sheet-in">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <span class="sheet-title" id="formTitle">新しいレシピ</span>
+        <button class="sheet-close" onclick="closeForm()">✕</button>
+      </div>
+      <div class="sheet-scroll" id="formScroll"></div>
+    </div>
+  </div>
+
+  <!-- アカウント シート -->
+  <div class="sheet-bg" id="accountBg" onclick="closeAccount()"></div>
+  <div class="sheet" id="accountSheet">
+    <div class="sheet-in">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <span class="sheet-title">👤 アカウント</span>
+        <button class="sheet-close" onclick="closeAccount()">✕</button>
+      </div>
+      <div class="sheet-scroll" id="accountScroll"></div>
+    </div>
+  </div>
+
+  <!-- みんなのレシピ シート -->
+  <div class="sheet-bg" id="publicBg" onclick="closePublic()"></div>
+  <div class="sheet" id="publicSheet">
+    <div class="sheet-in">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <span class="sheet-title">🌍 みんなのレシピ<span class="cnt" id="publicCnt"></span></span>
+        <button class="sheet-close" onclick="closePublic()">✕</button>
+      </div>
+      <div class="sheet-scroll" id="publicScroll"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script id="recipeData" type="application/json">[{"id": "oyako", "name": "親子丼", "genre": "丼", "emoji": "🍚", "time": 15, "cost": 240, "kcal": 680, "difficulty": 1, "required": ["鶏もも肉", "卵", "玉ねぎ", "ご飯"], "ingredients": [{"item": "鶏もも肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "めんつゆ(3倍)", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "水", "qty": 100, "unit": "ml", "rt": "ml"}], "steps": ["玉ねぎを薄切り、鶏もも肉を一口大に切る。", "鍋に水・めんつゆを入れ玉ねぎを煮る。", "鶏肉を加え火が通るまで5分煮る。", "溶き卵の2/3を回し入れ、半熟になったら残りを入れ火を止める。", "ご飯に乗せ、好みで三つ葉を添える。"], "tips": ["卵は2回に分けると半熟とふんわりが両立する。"], "type": "ご飯・麺"}, {"id": "gyudon", "name": "牛丼", "genre": "丼", "emoji": "🍚", "time": 15, "cost": 380, "kcal": 720, "difficulty": 1, "required": ["牛こま切れ肉", "玉ねぎ", "ご飯"], "ingredients": [{"item": "牛こま切れ肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "水", "qty": 150, "unit": "ml", "rt": "ml"}], "steps": ["玉ねぎをくし切りにする。", "鍋に水・醤油・砂糖・みりんを煮立てる。", "玉ねぎを入れ柔らかくなるまで煮る。", "牛肉を加えアクを取りながら5分煮る。", "ご飯に乗せ、好みで紅生姜を添える。"], "tips": ["牛肉は煮すぎると固くなるので火が通ったらすぐ。"], "type": "ご飯・麺"}, {"id": "soboro", "name": "そぼろ丼", "genre": "丼", "emoji": "🍚", "time": 15, "cost": 260, "kcal": 650, "difficulty": 1, "required": ["ひき肉", "ご飯"], "ingredients": [{"item": "ひき肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1.5, "unit": "大さじ", "rt": "tbsp"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["ひき肉を醤油・砂糖・おろし生姜で炒り煮にする。", "別の鍋で炒り卵を作る。", "ご飯にそぼろと炒り卵を半分ずつ乗せる。"], "tips": ["菜箸4本で混ぜるとそぼろがパラパラになる。"], "type": "ご飯・麺"}, {"id": "butadon", "name": "豚丼", "genre": "丼", "emoji": "🍚", "time": 15, "cost": 320, "kcal": 740, "difficulty": 1, "required": ["豚バラ肉", "玉ねぎ", "ご飯"], "ingredients": [{"item": "豚バラ肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["玉ねぎを薄切りにする。", "豚バラを炒め、玉ねぎを加える。", "醤油・みりん・砂糖を入れ照りが出るまで煮絡める。", "ご飯に乗せる。"], "tips": ["タレを煮詰めてからご飯に乗せると香ばしい。"], "type": "ご飯・麺"}, {"id": "chahan", "name": "チャーハン", "genre": "和", "emoji": "🍳", "time": 10, "cost": 200, "kcal": 600, "difficulty": 2, "required": ["ご飯", "卵"], "ingredients": [{"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "長ねぎ", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "サラダ油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["卵を溶き、ねぎをみじん切りにする。", "熱した油に卵を入れ、すぐご飯を加える。", "強火でご飯をほぐしながら炒める。", "ねぎ・塩こしょう・醤油を鍋肌から入れ炒め合わせる。"], "tips": ["ご飯は冷やご飯か、温かいご飯なら油を多めに。"], "type": "ご飯・麺"}, {"id": "natto-chahan", "name": "納豆チャーハン", "genre": "和", "emoji": "🍳", "time": 10, "cost": 180, "kcal": 610, "difficulty": 2, "required": ["納豆", "ご飯", "卵"], "ingredients": [{"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "納豆", "qty": 2, "unit": "パック", "rt": "count"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "長ねぎ", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["卵を溶きご飯と混ぜておく。", "油で卵ご飯を炒める。", "納豆を加え炒め、醤油・ねぎで仕上げる。"], "tips": ["納豆を入れると粘りが飛んでパラッと仕上がる。"], "type": "ご飯・麺"}, {"id": "carbonara", "name": "カルボナーラ", "genre": "麺", "emoji": "🍝", "time": 20, "cost": 320, "kcal": 780, "difficulty": 2, "required": ["ベーコン", "パスタ", "卵", "チーズ"], "ingredients": [{"item": "パスタ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ベーコン", "qty": 80, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "粉チーズ", "qty": 4, "unit": "大さじ", "rt": "tbsp"}, {"item": "黒こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "塩", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["卵・粉チーズ・黒こしょうを混ぜsoースを作る。", "ベーコンを炒める。", "表示時間通り茹でたパスタをベーコンに絡める。", "火を止め、卵ソースを手早く和える(余熱で)。"], "tips": ["火を止めてから卵を入れないと固まる。茹で汁少々で濃度調整。"], "type": "ご飯・麺"}, {"id": "peperoncino", "name": "ペペロンチーノ", "genre": "麺", "emoji": "🍝", "time": 15, "cost": 160, "kcal": 560, "difficulty": 2, "required": ["パスタ", "にんにく"], "ingredients": [{"item": "パスタ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "にんにく", "qty": 2, "unit": "片", "rt": "clove"}, {"item": "オリーブオイル", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "鷹の爪", "qty": 1, "unit": "本", "rt": "count"}, {"item": "塩", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["にんにくを薄切り、鷹の爪を輪切りにする。", "オリーブオイルで弱火でにんにくを揚げ焼き。", "茹で汁をお玉1杯加え乳化させる。", "茹でたパスタを和え塩で味を整える。"], "tips": ["にんにくは弱火でじっくり、焦がさない。"], "type": "ご飯・麺"}, {"id": "napolitan", "name": "ナポリタン", "genre": "麺", "emoji": "🍝", "time": 20, "cost": 240, "kcal": 640, "difficulty": 1, "required": ["パスタ", "玉ねぎ", "ピーマン"], "ingredients": [{"item": "パスタ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "ピーマン", "qty": 2, "unit": "個", "rt": "count"}, {"item": "ウインナー", "qty": 4, "unit": "本", "rt": "count"}, {"item": "ケチャップ", "qty": 5, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 10, "unit": "g", "rt": "g"}], "steps": ["野菜とウインナーを切る。", "バターで具を炒める。", "ケチャップを加え軽く炒め酸味を飛ばす。", "茹でたパスタを加え和える。"], "tips": ["ケチャップを先に炒めるとコクが出る。"], "type": "ご飯・麺"}, {"id": "tuna-pasta", "name": "ツナマヨパスタ", "genre": "麺", "emoji": "🍝", "time": 15, "cost": 200, "kcal": 600, "difficulty": 1, "required": ["パスタ", "ツナ缶"], "ingredients": [{"item": "パスタ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ツナ缶", "qty": 1, "unit": "缶", "rt": "count"}, {"item": "マヨネーズ", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "刻みのり", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["パスタを茹でる。", "ツナ・マヨ・醤油を混ぜる。", "茹でたパスタと和え、のりを散らす。"], "tips": ["冷製にしても美味しい。"], "type": "ご飯・麺"}, {"id": "meat-sauce", "name": "ミートソースパスタ", "genre": "麺", "emoji": "🍝", "time": 25, "cost": 300, "kcal": 720, "difficulty": 2, "required": ["ひき肉", "パスタ", "玉ねぎ"], "ingredients": [{"item": "パスタ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ひき肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "トマト缶", "qty": 0.5, "unit": "缶", "rt": "count"}, {"item": "ケチャップ", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["玉ねぎとにんにくをみじん切り。", "ひき肉と一緒に炒める。", "トマト缶・ケチャップを加え10分煮込む。", "茹でたパスタにかける。"], "tips": ["煮込むほどコクが出る。"], "type": "ご飯・麺"}, {"id": "chicken-saute", "name": "チキンソテー", "genre": "洋", "emoji": "🍗", "time": 15, "cost": 160, "kcal": 480, "difficulty": 1, "required": ["鶏もも肉"], "ingredients": [{"item": "鶏もも肉", "qty": 300, "unit": "g", "rt": "g"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "オリーブオイル", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["鶏肉に塩こしょうをする。", "皮目を下にして弱めの中火で焼く。", "8割火が通ったら返し、2分焼く。", "食べやすく切る。"], "tips": ["皮目をしっかり焼くとパリッとする。動かさない。"], "type": "主菜"}, {"id": "yodare", "name": "よだれ鶏", "genre": "中", "emoji": "🍗", "time": 20, "cost": 140, "kcal": 380, "difficulty": 2, "required": ["鶏むね肉"], "ingredients": [{"item": "鶏むね肉", "qty": 300, "unit": "g", "rt": "g"}, {"item": "長ねぎ", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "酢", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "ラー油", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "砂糖", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["鶏むねを茹でて余熱で火を通す。", "ねぎをみじん切りにしタレを作る。", "薄切りにした鶏に、タレをかける。"], "tips": ["茹でたら火を止め蓋をして放置するとしっとり。"], "type": "主菜"}, {"id": "teriyaki", "name": "鶏むねの照り焼き", "genre": "和", "emoji": "🍗", "time": 15, "cost": 140, "kcal": 420, "difficulty": 1, "required": ["鶏むね肉"], "ingredients": [{"item": "鶏むね肉", "qty": 300, "unit": "g", "rt": "g"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["むね肉をそぎ切りにし片栗粉をまぶす。", "フライパンで両面を焼く。", "醤油・みりん・砂糖を入れ照りが出るまで絡める。"], "tips": ["片栗粉でタレが絡みやすくジューシーに。"], "type": "主菜"}, {"id": "karaage", "name": "鶏の唐揚げ", "genre": "和", "emoji": "🍗", "time": 25, "cost": 200, "kcal": 560, "difficulty": 2, "required": ["鶏もも肉"], "ingredients": [{"item": "鶏もも肉", "qty": 300, "unit": "g", "rt": "g"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "酒", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "片栗粉", "qty": 4, "unit": "大さじ", "rt": "tbsp"}], "steps": ["鶏を一口大に切り、醤油・酒・にんにく・生姜で下味15分。", "片栗粉をまぶす。", "170℃の油で4分、一度上げて2分二度揚げ。"], "tips": ["二度揚げで外はカリッと中はジューシー。"], "type": "主菜"}, {"id": "shogayaki", "name": "豚こま生姜焼き", "genre": "和", "emoji": "🥩", "time": 15, "cost": 200, "kcal": 520, "difficulty": 1, "required": ["豚こま切れ肉", "玉ねぎ"], "ingredients": [{"item": "豚こま切れ肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["玉ねぎを薄切り、生姜をすりおろす。", "豚肉を炒め、玉ねぎを加える。", "醤油・みりん・生姜を入れ炒め絡める。"], "tips": ["タレは火を止める直前に入れると風味が残る。"], "type": "主菜"}, {"id": "yasaiitame", "name": "肉野菜炒め", "genre": "中", "emoji": "🥘", "time": 15, "cost": 240, "kcal": 420, "difficulty": 1, "required": ["豚こま切れ肉", "キャベツ"], "ingredients": [{"item": "豚こま切れ肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "キャベツ", "qty": 0.25, "unit": "玉", "rt": "count"}, {"item": "にんじん", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "もやし", "qty": 1, "unit": "袋", "rt": "count"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["野菜を食べやすく切る。", "豚肉を炒め、固い野菜から加える。", "強火で炒め塩こしょう・醤油で味付け。"], "tips": ["強火で手早く、水分を出さないのがコツ。"], "type": "主菜"}, {"id": "hoikoro", "name": "回鍋肉風", "genre": "中", "emoji": "🥘", "time": 15, "cost": 260, "kcal": 480, "difficulty": 2, "required": ["豚バラ肉", "キャベツ"], "ingredients": [{"item": "豚バラ肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "キャベツ", "qty": 0.25, "unit": "玉", "rt": "count"}, {"item": "ピーマン", "qty": 2, "unit": "個", "rt": "count"}, {"item": "味噌", "qty": 1.5, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "醤油", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["キャベツとピーマンをざく切り。", "豚バラを炒め、野菜を加える。", "味噌・砂糖・醤油を合わせて加え炒める。"], "tips": ["キャベツは炒めすぎず食感を残す。"], "type": "主菜"}, {"id": "butabara-itame", "name": "豚バラの甘辛炒め", "genre": "和", "emoji": "🥩", "time": 12, "cost": 220, "kcal": 500, "difficulty": 1, "required": ["豚バラ肉"], "ingredients": [{"item": "豚バラ肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "酒", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["豚バラを食べやすく切る。", "炒めて余分な脂を拭く。", "調味料を加え照りが出るまで炒める。"], "tips": ["脂を拭くと味が締まる。"], "type": "主菜"}, {"id": "hamburg", "name": "ハンバーグ", "genre": "洋", "emoji": "🍔", "time": 30, "cost": 280, "kcal": 620, "difficulty": 2, "required": ["ひき肉", "玉ねぎ"], "ingredients": [{"item": "ひき肉", "qty": 300, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "卵", "qty": 1, "unit": "個", "rt": "count"}, {"item": "パン粉", "qty": 4, "unit": "大さじ", "rt": "tbsp"}, {"item": "牛乳", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["玉ねぎをみじん切りにし炒めて冷ます。", "全材料を粘りが出るまで練る。", "小判型に成形し空気を抜く。", "中火で両面を焼き、蓋をして蒸し焼き8分。"], "tips": ["中央を凹ませると均一に火が通る。"], "type": "主菜"}, {"id": "mabo", "name": "麻婆豆腐", "genre": "中", "emoji": "🥘", "time": 20, "cost": 240, "kcal": 440, "difficulty": 2, "required": ["ひき肉", "豆腐"], "ingredients": [{"item": "ひき肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "豆腐", "qty": 1, "unit": "丁", "rt": "count"}, {"item": "長ねぎ", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "味噌", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "豆板醤", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["豆腐を角切りにし下茹でする。", "ひき肉を炒め豆板醤・味噌を加える。", "水と醤油を入れ豆腐を加え煮る。", "水溶き片栗粉でとろみをつけ、ねぎを散らす。"], "tips": ["豆腐を下茹ですると崩れにくい。"], "type": "主菜"}, {"id": "mabonasu", "name": "麻婆なす", "genre": "中", "emoji": "🍆", "time": 20, "cost": 260, "kcal": 460, "difficulty": 2, "required": ["なす", "ひき肉"], "ingredients": [{"item": "なす", "qty": 3, "unit": "本", "rt": "count"}, {"item": "ひき肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "味噌", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "豆板醤", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["なすを乱切りにし油で炒める。", "ひき肉を加え炒める。", "調味料を合わせて加え炒め絡める。"], "tips": ["なすは多めの油で炒めるととろける。"], "type": "主菜"}, {"id": "gyoza", "name": "焼き餃子", "genre": "中", "emoji": "🥟", "time": 30, "cost": 240, "kcal": 520, "difficulty": 3, "required": ["ひき肉", "餃子の皮", "キャベツ"], "ingredients": [{"item": "ひき肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "餃子の皮", "qty": 20, "unit": "枚", "rt": "count"}, {"item": "キャベツ", "qty": 0.2, "unit": "玉", "rt": "count"}, {"item": "にら", "qty": 0.5, "unit": "束", "rt": "count"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["野菜をみじん切りにし塩もみして水気を絞る。", "ひき肉・にんにく・醤油と混ぜる。", "皮で包む。", "油で焼き、水を入れ蓋をして蒸し焼き、最後に焼き目。"], "tips": ["蒸し焼き後に油を少し足すとパリッと。"], "type": "主菜"}, {"id": "omelet", "name": "オムレツ", "genre": "洋", "emoji": "🍳", "time": 10, "cost": 120, "kcal": 320, "difficulty": 2, "required": ["卵"], "ingredients": [{"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "牛乳", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 10, "unit": "g", "rt": "g"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["卵・牛乳・塩こしょうを混ぜる。", "バターを熱し卵液を流す。", "菜箸で大きく混ぜ半熟で形を整える。"], "tips": ["弱めの中火で手早く。余熱で火を通す。"], "type": "主菜"}, {"id": "dashimaki", "name": "だし巻き卵", "genre": "和", "emoji": "🍳", "time": 15, "cost": 120, "kcal": 280, "difficulty": 3, "required": ["卵"], "ingredients": [{"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "だし汁", "qty": 60, "unit": "ml", "rt": "ml"}, {"item": "醤油", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "砂糖", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["卵・だし・調味料を混ぜる。", "卵焼き器に薄く流し、巻く。", "これを数回繰り返す。"], "tips": ["弱火でゆっくり、巻くたびに油を薄く。"], "type": "主菜"}, {"id": "eggsoup", "name": "中華卵スープ", "genre": "汁", "emoji": "🥣", "time": 10, "cost": 80, "kcal": 120, "difficulty": 1, "required": ["卵"], "ingredients": [{"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "水", "qty": 500, "unit": "ml", "rt": "ml"}, {"item": "鶏がらスープの素", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "長ねぎ", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["水と鶏がらスープを煮立てる。", "水溶き片栗粉でとろみをつける。", "溶き卵を回し入れ、ふわっとさせる。", "ねぎを散らす。"], "tips": ["とろみをつけてから卵を入れるとふんわり。"], "type": "汁物"}, {"id": "tomato-egg", "name": "トマトと卵の炒め", "genre": "中", "emoji": "🍅", "time": 10, "cost": 180, "kcal": 280, "difficulty": 1, "required": ["トマト", "卵"], "ingredients": [{"item": "トマト", "qty": 2, "unit": "個", "rt": "count"}, {"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "塩", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "砂糖", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "サラダ油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["トマトをくし切り、卵を溶く。", "卵を半熟に炒め一度取り出す。", "トマトを炒め塩・砂糖を加える。", "卵を戻しさっと合わせる。"], "tips": ["卵は先に半熟にして戻すとふんわり。"], "type": "主菜"}, {"id": "misoshiru", "name": "具だくさん味噌汁", "genre": "汁", "emoji": "🥣", "time": 15, "cost": 120, "kcal": 140, "difficulty": 1, "required": ["豆腐"], "ingredients": [{"item": "豆腐", "qty": 0.5, "unit": "丁", "rt": "count"}, {"item": "油揚げ", "qty": 1, "unit": "枚", "rt": "count"}, {"item": "わかめ(乾)", "qty": 2, "unit": "g", "rt": "g"}, {"item": "だし汁", "qty": 600, "unit": "ml", "rt": "ml"}, {"item": "味噌", "qty": 3, "unit": "大さじ", "rt": "tbsp"}], "steps": ["だしを温め、油揚げと豆腐を入れる。", "わかめを加える。", "火を弱め味噌を溶き入れる(煮立てない)。"], "tips": ["味噌は最後、沸騰させると風味が飛ぶ。"], "type": "汁物"}, {"id": "agedashi", "name": "なすの揚げ浸し", "genre": "和", "emoji": "🍆", "time": 20, "cost": 160, "kcal": 220, "difficulty": 2, "required": ["なす"], "ingredients": [{"item": "なす", "qty": 3, "unit": "本", "rt": "count"}, {"item": "めんつゆ(3倍)", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "水", "qty": 150, "unit": "ml", "rt": "ml"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["なすを乱切りにする。", "多めの油で焼き色がつくまで揚げ焼き。", "めんつゆ+水に熱いうちに浸す。", "おろし生姜を添える。"], "tips": ["熱いうちに浸すと味が染みる。冷やしても美味。"], "type": "主菜"}, {"id": "namul", "name": "もやしナムル", "genre": "副", "emoji": "🥗", "time": 10, "cost": 60, "kcal": 100, "difficulty": 1, "required": ["もやし"], "ingredients": [{"item": "もやし", "qty": 1, "unit": "袋", "rt": "count"}, {"item": "ごま油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "鶏がらスープの素", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "にんにく", "qty": 0.5, "unit": "片", "rt": "clove"}, {"item": "白ごま", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["もやしを1分茹でて水気を切る。", "ごま油・鶏がら・おろしにんにくで和える。", "白ごまを振る。"], "tips": ["茹ですぎず食感を残す。"], "type": "副菜・サラダ"}, {"id": "moyashi-itame", "name": "もやし炒め", "genre": "中", "emoji": "🥘", "time": 8, "cost": 80, "kcal": 160, "difficulty": 1, "required": ["もやし"], "ingredients": [{"item": "もやし", "qty": 1, "unit": "袋", "rt": "count"}, {"item": "ベーコン", "qty": 40, "unit": "g", "rt": "g"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "醤油", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["ベーコンを炒める。", "もやしを加え強火でさっと炒める。", "塩こしょう・醤油で味付け。"], "tips": ["強火短時間でシャキッと。"], "type": "副菜・サラダ"}, {"id": "potato-salad", "name": "ポテトサラダ", "genre": "副", "emoji": "🥗", "time": 20, "cost": 140, "kcal": 280, "difficulty": 1, "required": ["じゃがいも"], "ingredients": [{"item": "じゃがいも", "qty": 3, "unit": "個", "rt": "count"}, {"item": "にんじん", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "きゅうり", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "マヨネーズ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["じゃがいもを茹でて潰す。", "にんじんを茹で、きゅうりを薄切り塩もみ。", "全部をマヨ・塩こしょうで和える。"], "tips": ["熱いうちに少し酢を振ると締まる。"], "type": "副菜・サラダ"}, {"id": "fried-potato", "name": "フライドポテト", "genre": "副", "emoji": "🍟", "time": 20, "cost": 100, "kcal": 320, "difficulty": 1, "required": ["じゃがいも"], "ingredients": [{"item": "じゃがいも", "qty": 3, "unit": "個", "rt": "count"}, {"item": "塩", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "サラダ油", "qty": 200, "unit": "ml", "rt": "ml"}], "steps": ["じゃがいもを櫛形に切り水にさらす。", "水気を拭き、低温の油から揚げる。", "temperatureを上げカリッとさせる。", "塩を振る。"], "tips": ["二度揚げで外カリ中ホク。"], "type": "副菜・サラダ"}, {"id": "nikujaga", "name": "肉じゃが", "genre": "和", "emoji": "🥘", "time": 30, "cost": 300, "kcal": 480, "difficulty": 2, "required": ["じゃがいも", "玉ねぎ", "にんじん"], "ingredients": [{"item": "じゃがいも", "qty": 3, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "にんじん", "qty": 1, "unit": "本", "rt": "count"}, {"item": "豚こま切れ肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "醤油", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["野菜を一口大に切る。", "肉を炒め、野菜を加え炒める。", "水と調味料を入れ落とし蓋で15分煮る。", "煮汁が減るまで煮含める。"], "tips": ["一度冷ますと味が染みる。"], "type": "主菜"}, {"id": "kinpira", "name": "きんぴらごぼう", "genre": "副", "emoji": "🥗", "time": 15, "cost": 120, "kcal": 160, "difficulty": 1, "required": ["にんじん"], "ingredients": [{"item": "にんじん", "qty": 1, "unit": "本", "rt": "count"}, {"item": "ごぼう", "qty": 1, "unit": "本", "rt": "count"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "ごま油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "鷹の爪", "qty": 1, "unit": "本", "rt": "count"}], "steps": ["にんじんとごぼうを細切りにする。", "ごま油で炒める。", "醤油・砂糖・鷹の爪で炒め煮にする。"], "tips": ["ごぼうは水にさらしアク抜き。"], "type": "副菜・サラダ"}, {"id": "komatsuna", "name": "小松菜と油揚げの煮浸し", "genre": "和", "emoji": "🥬", "time": 12, "cost": 120, "kcal": 140, "difficulty": 1, "required": ["小松菜", "油揚げ"], "ingredients": [{"item": "小松菜", "qty": 1, "unit": "束", "rt": "count"}, {"item": "油揚げ", "qty": 1, "unit": "枚", "rt": "count"}, {"item": "だし汁", "qty": 200, "unit": "ml", "rt": "ml"}, {"item": "醤油", "qty": 1.5, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["小松菜を5cmに切り、油揚げを短冊に。", "だしと調味料を煮立てる。", "油揚げ→小松菜の順に入れさっと煮る。"], "tips": ["小松菜は煮すぎず色よく。"], "type": "副菜・サラダ"}, {"id": "bacon-spinach", "name": "ベーコンとほうれん草の炒め", "genre": "洋", "emoji": "🥬", "time": 10, "cost": 180, "kcal": 240, "difficulty": 1, "required": ["ベーコン", "ほうれん草"], "ingredients": [{"item": "ほうれん草", "qty": 1, "unit": "束", "rt": "count"}, {"item": "ベーコン", "qty": 60, "unit": "g", "rt": "g"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["ほうれん草を茹でて水気を絞り切る。", "にんにくとベーコンを炒める。", "ほうれん草を加え塩こしょうで炒める。"], "tips": ["ほうれん草は下茹でしてアク抜き。"], "type": "主菜"}, {"id": "millefeuille", "name": "白菜と豚バラのミルフィーユ鍋", "genre": "和", "emoji": "🍲", "time": 30, "cost": 340, "kcal": 520, "difficulty": 2, "required": ["白菜", "豚バラ肉"], "ingredients": [{"item": "白菜", "qty": 0.25, "unit": "株", "rt": "count"}, {"item": "豚バラ肉", "qty": 300, "unit": "g", "rt": "g"}, {"item": "だし汁", "qty": 400, "unit": "ml", "rt": "ml"}, {"item": "ポン酢", "qty": 4, "unit": "大さじ", "rt": "tbsp"}], "steps": ["白菜と豚バラを交互に重ねる。", "5cm幅に切り鍋に敷き詰める。", "だしを注ぎ蓋をして15分煮る。", "ポン酢でいただく。"], "tips": ["白菜の芯を下にすると煮えやすい。"], "type": "主菜"}, {"id": "kinoko-butter", "name": "きのこのバター醤油炒め", "genre": "副", "emoji": "🍄", "time": 10, "cost": 160, "kcal": 180, "difficulty": 1, "required": ["きのこ"], "ingredients": [{"item": "きのこ(お好み)", "qty": 200, "unit": "g", "rt": "g"}, {"item": "バター", "qty": 15, "unit": "g", "rt": "g"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["きのこをほぐす。", "バターとにんにくで炒める。", "醤油を回し入れ香ばしく仕上げる。"], "tips": ["数種のきのこを混ぜると旨味が増す。"], "type": "副菜・サラダ"}, {"id": "kinoko-rice", "name": "きのこの炊き込みご飯風", "genre": "和", "emoji": "🍄", "time": 20, "cost": 200, "kcal": 480, "difficulty": 2, "required": ["きのこ", "ご飯"], "ingredients": [{"item": "きのこ(お好み)", "qty": 150, "unit": "g", "rt": "g"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "油揚げ", "qty": 1, "unit": "枚", "rt": "count"}], "steps": ["きのこと油揚げを醤油・みりんで煮る。", "温かいご飯に混ぜ込む。", "蒸らして馴染ませる。"], "tips": ["本来は米から炊くが、混ぜご飯でも手軽。"], "type": "ご飯・麺"}, {"id": "broc-shrimp", "name": "ブロッコリーとエビの炒め", "genre": "中", "emoji": "🥦", "time": 15, "cost": 380, "kcal": 280, "difficulty": 2, "required": ["ブロッコリー", "エビ"], "ingredients": [{"item": "ブロッコリー", "qty": 1, "unit": "株", "rt": "count"}, {"item": "エビ", "qty": 150, "unit": "g", "rt": "g"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "塩", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "鶏がらスープの素", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["ブロッコリーを小房に分け下茹で。", "エビの背わたを取る。", "にんにくとエビを炒め、ブロッコリーを加える。", "塩・鶏がらで味付け。"], "tips": ["エビは炒めすぎず、プリッと。"], "type": "主菜"}, {"id": "salmon-meuniere", "name": "サーモンのムニエル", "genre": "洋", "emoji": "🐟", "time": 15, "cost": 360, "kcal": 420, "difficulty": 2, "required": ["サーモン"], "ingredients": [{"item": "サーモン", "qty": 2, "unit": "切れ", "rt": "count"}, {"item": "小麦粉", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 15, "unit": "g", "rt": "g"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "レモン", "qty": 0.25, "unit": "個", "rt": "count"}], "steps": ["サーモンに塩こしょうし小麦粉を薄くまぶす。", "バターで皮目から焼く。", "返して中まで火を通す。", "レモンを添える。"], "tips": ["小麦粉は薄く、余分をはたく。"], "type": "主菜"}, {"id": "ebichili", "name": "エビチリ風", "genre": "中", "emoji": "🦐", "time": 20, "cost": 400, "kcal": 320, "difficulty": 2, "required": ["エビ"], "ingredients": [{"item": "エビ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ケチャップ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "豆板醤", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["エビに片栗粉をまぶす。", "にんにく・生姜・豆板醤を炒める。", "ケチャップと水を加えエビを炒め煮。", "水溶き片栗粉でとろみ。"], "tips": ["エビは片栗粉をまぶすとプリッと。"], "type": "主菜"}, {"id": "kitsune", "name": "きつねうどん", "genre": "麺", "emoji": "🍜", "time": 15, "cost": 160, "kcal": 420, "difficulty": 1, "required": ["うどん", "油揚げ"], "ingredients": [{"item": "うどん", "qty": 2, "unit": "玉", "rt": "count"}, {"item": "油揚げ", "qty": 2, "unit": "枚", "rt": "count"}, {"item": "だし汁", "qty": 600, "unit": "ml", "rt": "ml"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["油揚げを醤油・みりん・砂糖で甘く煮る。", "だしを温めうどんを茹でる。", "器に盛り、甘揚げと長ねぎを乗せる。"], "tips": ["油揚げは熱湯で油抜きしてから煮る。"], "type": "ご飯・麺"}, {"id": "nikuudon", "name": "肉うどん", "genre": "麺", "emoji": "🍜", "time": 15, "cost": 280, "kcal": 520, "difficulty": 1, "required": ["うどん", "豚こま切れ肉"], "ingredients": [{"item": "うどん", "qty": 2, "unit": "玉", "rt": "count"}, {"item": "豚こま切れ肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "だし汁", "qty": 600, "unit": "ml", "rt": "ml"}, {"item": "醤油", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "長ねぎ", "qty": 0.5, "unit": "本", "rt": "count"}], "steps": ["豚肉を甘辛く煮る。", "だしを温めうどんを茹でる。", "器に盛り肉とねぎを乗せる。"], "tips": ["肉は別に煮ると汁が濁らない。"], "type": "ご飯・麺"}, {"id": "zarusoba", "name": "ざるそば", "genre": "麺", "emoji": "🍜", "time": 10, "cost": 120, "kcal": 340, "difficulty": 1, "required": ["そば"], "ingredients": [{"item": "そば", "qty": 2, "unit": "束", "rt": "count"}, {"item": "めんつゆ(3倍)", "qty": 4, "unit": "大さじ", "rt": "tbsp"}, {"item": "水", "qty": 120, "unit": "ml", "rt": "ml"}, {"item": "長ねぎ", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "わさび", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["そばを表示通り茹で冷水で締める。", "めんつゆを水で割る。", "薬味を添えて盛る。"], "tips": ["茹でた後しっかり冷水で締めるとコシが出る。"], "type": "ご飯・麺"}, {"id": "french-toast", "name": "フレンチトースト", "genre": "洋", "emoji": "🍞", "time": 20, "cost": 160, "kcal": 420, "difficulty": 1, "required": ["食パン", "卵", "牛乳"], "ingredients": [{"item": "食パン", "qty": 2, "unit": "枚", "rt": "count"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "牛乳", "qty": 150, "unit": "ml", "rt": "ml"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 10, "unit": "g", "rt": "g"}], "steps": ["卵・牛乳・砂糖を混ぜる。", "食パンを浸し10分置く。", "バターで両面こんがり焼く。"], "tips": ["しっかり浸すとふわとろに。"], "type": "ご飯・麺"}, {"id": "pizza-toast", "name": "ピザトースト", "genre": "洋", "emoji": "🍞", "time": 12, "cost": 180, "kcal": 380, "difficulty": 1, "required": ["食パン", "チーズ"], "ingredients": [{"item": "食パン", "qty": 2, "unit": "枚", "rt": "count"}, {"item": "チーズ", "qty": 60, "unit": "g", "rt": "g"}, {"item": "ケチャップ", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "ピーマン", "qty": 1, "unit": "個", "rt": "count"}, {"item": "ウインナー", "qty": 2, "unit": "本", "rt": "count"}], "steps": ["食パンにケチャップを塗る。", "薄切りの具とチーズを乗せる。", "トースターで焼き色がつくまで焼く。"], "tips": ["チーズは多めが満足度高い。"], "type": "ご飯・麺"}, {"id": "tonjiru", "name": "豚汁", "genre": "汁", "emoji": "🥣", "time": 25, "cost": 280, "kcal": 280, "difficulty": 2, "required": ["豚バラ肉", "にんじん"], "ingredients": [{"item": "豚バラ肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "にんじん", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "じゃがいも", "qty": 1, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "だし汁", "qty": 600, "unit": "ml", "rt": "ml"}, {"item": "味噌", "qty": 3, "unit": "大さじ", "rt": "tbsp"}], "steps": ["豚肉と野菜を一口大に切る。", "豚肉を炒め、野菜を加え炒める。", "だしを入れ野菜が柔らかくなるまで煮る。", "火を弱め味噌を溶く。"], "tips": ["具を炒めてから煮るとコクが出る。"], "type": "汁物"}, {"id": "oyakoni", "name": "鶏と卵の親子煮", "genre": "和", "emoji": "🍲", "time": 15, "cost": 200, "kcal": 380, "difficulty": 1, "required": ["鶏もも肉", "卵", "玉ねぎ"], "ingredients": [{"item": "鶏もも肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "だし汁", "qty": 150, "unit": "ml", "rt": "ml"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["玉ねぎを薄切り、鶏を一口大に。", "だしと調味料で玉ねぎと鶏を煮る。", "溶き卵を回し入れ半熟で火を止める。"], "tips": ["ご飯に乗せれば親子丼にもなる。"], "type": "主菜"}, {"id": "buta-kimchi", "name": "豚キムチ", "genre": "中", "emoji": "🥘", "time": 12, "cost": 280, "kcal": 480, "difficulty": 1, "required": ["豚バラ肉"], "ingredients": [{"item": "豚バラ肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "キムチ", "qty": 150, "unit": "g", "rt": "g"}, {"item": "にら", "qty": 0.5, "unit": "束", "rt": "count"}, {"item": "醤油", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "ごま油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["豚バラを炒める。", "キムチを加え炒める。", "にらを入れさっと炒め醤油で味を整える。"], "tips": ["キムチは少し炒めると酸味が和らぐ。"], "type": "主菜"}, {"id": "buri-daikon", "name": "ぶり大根", "genre": "和", "emoji": "🐟", "time": 40, "cost": 400, "kcal": 420, "difficulty": 2, "type": "主菜", "required": ["ぶり", "大根"], "ingredients": [{"item": "ぶり", "qty": 2, "unit": "切れ", "rt": "count"}, {"item": "大根", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "醤油", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["大根を厚めの輪切りにし下茹でする。", "ぶりを熱湯にくぐらせ霜降りにする。", "鍋に調味料と大根・ぶりを入れ落とし蓋で30分煮る。", "煮汁を絡める。"], "tips": ["大根を下茹ですると味が染みやすい。"]}, {"id": "saba-miso", "name": "さばの味噌煮", "genre": "和", "emoji": "🐟", "time": 25, "cost": 280, "kcal": 380, "difficulty": 2, "type": "主菜", "required": ["さば"], "ingredients": [{"item": "さば", "qty": 2, "unit": "切れ", "rt": "count"}, {"item": "味噌", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["さばに切り込みを入れ霜降りにする。", "鍋に水・砂糖・みりん・生姜を煮立てる。", "さばを入れ落とし蓋で10分煮る。", "味噌を溶き入れさらに5分煮る。"], "tips": ["味噌は最後に加えて風味を残す。"]}, {"id": "chikuzenni", "name": "筑前煮", "genre": "和", "emoji": "🥘", "time": 40, "cost": 360, "kcal": 320, "difficulty": 2, "type": "主菜", "required": ["鶏もも肉", "にんじん", "ごぼう"], "ingredients": [{"item": "鶏もも肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "にんじん", "qty": 1, "unit": "本", "rt": "count"}, {"item": "ごぼう", "qty": 1, "unit": "本", "rt": "count"}, {"item": "れんこん", "qty": 1, "unit": "節", "rt": "count"}, {"item": "こんにゃく", "qty": 1, "unit": "枚", "rt": "count"}, {"item": "醤油", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["具材を一口大に切る。", "鶏肉を炒め、根菜を加え炒める。", "だしと調味料を入れ落とし蓋で20分煮る。", "煮汁が少なくなるまで煮含める。"], "tips": ["根菜の乱切りで味が染みやすい。"]}, {"id": "buta-kakuni", "name": "豚の角煮", "genre": "和", "emoji": "🥩", "time": 90, "cost": 400, "kcal": 620, "difficulty": 3, "type": "主菜", "required": ["豚バラ肉"], "ingredients": [{"item": "豚バラ肉", "qty": 400, "unit": "g", "rt": "g"}, {"item": "醤油", "qty": 4, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "酒", "qty": 100, "unit": "ml", "rt": "ml"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "ゆで卵", "qty": 3, "unit": "個", "rt": "count"}], "steps": ["豚バラを下茹でして脂を抜く(60分)。", "調味料とゆで卵を入れ30分煮る。", "味を染み込ませる。"], "tips": ["下茹で時間をかけるほど柔らかくなる。"]}, {"id": "tsukune", "name": "鶏つくね", "genre": "和", "emoji": "🍢", "time": 25, "cost": 220, "kcal": 380, "difficulty": 2, "type": "主菜", "required": ["鶏ひき肉"], "ingredients": [{"item": "鶏ひき肉", "qty": 300, "unit": "g", "rt": "g"}, {"item": "長ねぎ", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "卵", "qty": 1, "unit": "個", "rt": "count"}, {"item": "片栗粉", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["ひき肉・刻みねぎ・卵・片栗粉を練る。", "小判型に成形し焼く。", "醤油・みりんのタレを絡める。"], "tips": ["卵黄を絡めて食べても美味しい。"]}, {"id": "chawanmushi", "name": "茶碗蒸し", "genre": "和", "emoji": "🍮", "time": 30, "cost": 200, "kcal": 140, "difficulty": 3, "type": "主菜", "required": ["卵"], "ingredients": [{"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "だし汁", "qty": 300, "unit": "ml", "rt": "ml"}, {"item": "鶏もも肉", "qty": 50, "unit": "g", "rt": "g"}, {"item": "しいたけ", "qty": 2, "unit": "個", "rt": "count"}, {"item": "醤油", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["卵を溶きだしと合わせ濾す。", "具を器に入れ卵液を注ぐ。", "蒸し器で弱火で15分蒸す。"], "tips": ["弱火で蒸すと「す」が入らない。"]}, {"id": "nikudofu", "name": "肉豆腐", "genre": "和", "emoji": "🍲", "time": 20, "cost": 260, "kcal": 380, "difficulty": 1, "type": "主菜", "required": ["牛こま切れ肉", "豆腐"], "ingredients": [{"item": "牛こま切れ肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "豆腐", "qty": 1, "unit": "丁", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "醤油", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["玉ねぎを薄切り、豆腐を大きめに切る。", "だしと調味料を煮立て牛肉を入れる。", "豆腐と玉ねぎを加え15分煮る。"], "tips": ["豆腐は煮崩れないよう大きめに。"]}, {"id": "buri-teri-wa", "name": "ぶりの照り焼き", "genre": "和", "emoji": "🐟", "time": 20, "cost": 300, "kcal": 420, "difficulty": 2, "type": "主菜", "required": ["ぶり"], "ingredients": [{"item": "ぶり", "qty": 2, "unit": "切れ", "rt": "count"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["ぶりを焼く。", "醤油・みりん・砂糖を入れ照りが出るまで絡める。"], "tips": ["タレを煮詰めて照りを出す。"]}, {"id": "beef-stew", "name": "ビーフシチュー", "genre": "洋", "emoji": "🍲", "time": 90, "cost": 600, "kcal": 580, "difficulty": 3, "type": "主菜", "required": ["牛こま切れ肉", "じゃがいも", "にんじん"], "ingredients": [{"item": "牛こま切れ肉", "qty": 300, "unit": "g", "rt": "g"}, {"item": "じゃがいも", "qty": 2, "unit": "個", "rt": "count"}, {"item": "にんじん", "qty": 1, "unit": "本", "rt": "count"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "デミグラスソース", "qty": 1, "unit": "缶", "rt": "count"}, {"item": "赤ワイン", "qty": 100, "unit": "ml", "rt": "ml"}], "steps": ["肉と野菜を炒める。", "赤ワインと水を加え煮る。", "デミグラスソースを入れ60分煮込む。"], "tips": ["じっくり煮込むほど肉が柔らかく。"]}, {"id": "cream-stew", "name": "クリームシチュー", "genre": "洋", "emoji": "🍲", "time": 40, "cost": 400, "kcal": 480, "difficulty": 2, "type": "主菜", "required": ["鶏もも肉", "じゃがいも", "にんじん"], "ingredients": [{"item": "鶏もも肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "じゃがいも", "qty": 2, "unit": "個", "rt": "count"}, {"item": "にんじん", "qty": 1, "unit": "本", "rt": "count"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "牛乳", "qty": 400, "unit": "ml", "rt": "ml"}, {"item": "小麦粉", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 20, "unit": "g", "rt": "g"}], "steps": ["具材を切り炒める。", "小麦粉を振り入れ炒める。", "牛乳を少しずつ加えとろみをつけ煮る。"], "tips": ["小麦粉はダマにならないよう少しずつ。"]}, {"id": "gratin", "name": "マカロニグラタン", "genre": "洋", "emoji": "🧀", "time": 40, "cost": 360, "kcal": 560, "difficulty": 2, "type": "主菜", "required": ["マカロニ", "牛乳", "チーズ"], "ingredients": [{"item": "マカロニ", "qty": 100, "unit": "g", "rt": "g"}, {"item": "鶏もも肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "牛乳", "qty": 400, "unit": "ml", "rt": "ml"}, {"item": "小麦粉", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 20, "unit": "g", "rt": "g"}, {"item": "チーズ", "qty": 60, "unit": "g", "rt": "g"}], "steps": ["マカロニを茹でる。", "ホワイトソースを作る。", "具と和えチーズをのせオーブンで焼く。"], "tips": ["焼き色がつくまでしっかり焼く。"]}, {"id": "meat-loaf", "name": "ミートローフ", "genre": "洋", "emoji": "🍖", "time": 50, "cost": 380, "kcal": 540, "difficulty": 2, "type": "主菜", "required": ["ひき肉", "玉ねぎ"], "ingredients": [{"item": "ひき肉", "qty": 400, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "卵", "qty": 1, "unit": "個", "rt": "count"}, {"item": "パン粉", "qty": 5, "unit": "大さじ", "rt": "tbsp"}, {"item": "ケチャップ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}], "steps": ["玉ねぎを炒め冷ます。", "材料を練り型に詰める。", "オーブンで40分焼く。"], "tips": ["竹串を刺して透明な汁が出たら焼き上がり。"]}, {"id": "pork-piccata", "name": "ポークピカタ", "genre": "洋", "emoji": "🥩", "time": 20, "cost": 280, "kcal": 480, "difficulty": 2, "type": "主菜", "required": ["豚ロース肉", "卵"], "ingredients": [{"item": "豚ロース肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "粉チーズ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "小麦粉", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["豚肉に塩こしょうし小麦粉をまぶす。", "卵と粉チーズを混ぜた液にくぐらせる。", "バターで両面を焼く。"], "tips": ["卵液はチーズでコクをプラス。"]}, {"id": "rosu-katsu", "name": "ロースとんかつ", "genre": "洋", "emoji": "🍖", "time": 30, "cost": 340, "kcal": 680, "difficulty": 2, "type": "主菜", "required": ["豚ロース肉"], "ingredients": [{"item": "豚ロース肉", "qty": 2, "unit": "枚", "rt": "count"}, {"item": "卵", "qty": 1, "unit": "個", "rt": "count"}, {"item": "小麦粉", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "パン粉", "qty": 1, "unit": "カップ", "rt": "count"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["豚肉に塩こしょうし筋切りする。", "小麦粉・卵・パン粉の順につける。", "170℃の油で揚げる。"], "tips": ["揚げた後立てて油を切るとサクッと。"]}, {"id": "ebi-fry", "name": "エビフライ", "genre": "洋", "emoji": "🍤", "time": 30, "cost": 420, "kcal": 480, "difficulty": 2, "type": "主菜", "required": ["エビ"], "ingredients": [{"item": "エビ", "qty": 8, "unit": "尾", "rt": "count"}, {"item": "卵", "qty": 1, "unit": "個", "rt": "count"}, {"item": "小麦粉", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "パン粉", "qty": 1, "unit": "カップ", "rt": "count"}], "steps": ["エビの背わたを取り腹に切り込み伸ばす。", "小麦粉・卵・パン粉をつける。", "180℃でカラッと揚げる。"], "tips": ["腹側に切り込みを入れると真っ直ぐに。"]}, {"id": "omurice", "name": "オムライス", "genre": "洋", "emoji": "🍳", "time": 25, "cost": 280, "kcal": 620, "difficulty": 2, "type": "ご飯・麺", "required": ["ご飯", "卵", "玉ねぎ"], "ingredients": [{"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 4, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "鶏もも肉", "qty": 100, "unit": "g", "rt": "g"}, {"item": "ケチャップ", "qty": 4, "unit": "大さじ", "rt": "tbsp"}], "steps": ["具を炒めご飯とケチャップでチキンライスを作る。", "卵を焼いて半熟にする。", "ライスに卵をのせる。"], "tips": ["卵は半熟で包むととろり。"]}, {"id": "doria", "name": "ドリア", "genre": "洋", "emoji": "🧀", "time": 35, "cost": 340, "kcal": 640, "difficulty": 2, "type": "ご飯・麺", "required": ["ご飯", "牛乳", "チーズ"], "ingredients": [{"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "牛乳", "qty": 300, "unit": "ml", "rt": "ml"}, {"item": "小麦粉", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 15, "unit": "g", "rt": "g"}, {"item": "チーズ", "qty": 60, "unit": "g", "rt": "g"}], "steps": ["バターライスを作り器に敷く。", "ホワイトソースをかける。", "チーズをのせオーブンで焼く。"], "tips": ["バターライスにすると風味豊か。"]}, {"id": "tornado-omelet", "name": "ふわとろオムレツ", "genre": "洋", "emoji": "🍳", "time": 10, "cost": 140, "kcal": 340, "difficulty": 3, "type": "主菜", "required": ["卵"], "ingredients": [{"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "生クリーム", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 15, "unit": "g", "rt": "g"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["卵と生クリームを混ぜる。", "バターを熱し卵液を流す。", "手早く混ぜ半熟で形を整える。"], "tips": ["生クリームでふわとろに。"]}, {"id": "ebi-mayo", "name": "エビマヨ", "genre": "中", "emoji": "🍤", "time": 20, "cost": 420, "kcal": 420, "difficulty": 2, "type": "主菜", "required": ["エビ"], "ingredients": [{"item": "エビ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "マヨネーズ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "ケチャップ", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "片栗粉", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "練乳", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["エビに片栗粉をまぶし揚げ焼き。", "マヨ・ケチャップ・練乳のソースを作る。", "エビを和える。"], "tips": ["練乳でまろやかな甘みを。"]}, {"id": "subuta", "name": "酢豚", "genre": "中", "emoji": "🥘", "time": 30, "cost": 380, "kcal": 520, "difficulty": 2, "type": "主菜", "required": ["豚こま切れ肉", "ピーマン", "玉ねぎ"], "ingredients": [{"item": "豚こま切れ肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "ピーマン", "qty": 2, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "にんじん", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "酢", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "ケチャップ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "片栗粉", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["豚肉を丸め片栗粉をまぶし揚げる。", "野菜を炒める。", "甘酢あんを作り全体を絡める。"], "tips": ["あんは先に作っておくと手早い。"]}, {"id": "chinjao", "name": "青椒肉絲", "genre": "中", "emoji": "🥘", "time": 20, "cost": 340, "kcal": 420, "difficulty": 2, "type": "主菜", "required": ["牛こま切れ肉", "ピーマン"], "ingredients": [{"item": "牛こま切れ肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ピーマン", "qty": 4, "unit": "個", "rt": "count"}, {"item": "たけのこ", "qty": 100, "unit": "g", "rt": "g"}, {"item": "オイスターソース", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["肉と野菜を細切りにする。", "肉に下味と片栗粉をつけ炒める。", "野菜を加えオイスターソースで炒める。"], "tips": ["細切りを揃えると火の通りが均一。"]}, {"id": "hoikoro-honkaku", "name": "本格回鍋肉", "genre": "中", "emoji": "🥘", "time": 20, "cost": 300, "kcal": 500, "difficulty": 2, "type": "主菜", "required": ["豚バラ肉", "キャベツ"], "ingredients": [{"item": "豚バラ肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "キャベツ", "qty": 0.3, "unit": "玉", "rt": "count"}, {"item": "ピーマン", "qty": 2, "unit": "個", "rt": "count"}, {"item": "甜麺醤", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "豆板醤", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["キャベツをざく切りにし豚バラを炒める。", "にんにく・豆板醤を加える。", "甜麺醤で味付けし野菜を炒める。"], "tips": ["甜麺醤がコクの決め手。"]}, {"id": "tantanmen", "name": "担々麺", "genre": "麺", "emoji": "🍜", "time": 25, "cost": 340, "kcal": 680, "difficulty": 2, "type": "ご飯・麺", "required": ["中華麺", "ひき肉"], "ingredients": [{"item": "中華麺", "qty": 2, "unit": "玉", "rt": "count"}, {"item": "ひき肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "練りごま", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "豆板醤", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "鶏がらスープの素", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "長ねぎ", "qty": 0.5, "unit": "本", "rt": "count"}], "steps": ["ひき肉を炒め肉味噌を作る。", "練りごまと鶏がらスープでスープを作る。", "茹でた麺にスープと肉味噌をのせる。"], "tips": ["練りごまでコクのあるスープに。"]}, {"id": "chuka-don", "name": "中華丼", "genre": "丼", "emoji": "🍚", "time": 20, "cost": 320, "kcal": 620, "difficulty": 2, "type": "ご飯・麺", "required": ["豚こま切れ肉", "白菜", "ご飯"], "ingredients": [{"item": "豚こま切れ肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "白菜", "qty": 0.2, "unit": "株", "rt": "count"}, {"item": "にんじん", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "鶏がらスープの素", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "オイスターソース", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["肉と野菜を炒める。", "スープと調味料を加え煮る。", "水溶き片栗粉でとろみをつけご飯にかける。"], "tips": ["とろみは強めが丼向き。"]}, {"id": "yakisoba", "name": "焼きそば", "genre": "麺", "emoji": "🍜", "time": 15, "cost": 240, "kcal": 560, "difficulty": 1, "type": "ご飯・麺", "required": ["焼きそば麺", "豚こま切れ肉", "キャベツ"], "ingredients": [{"item": "焼きそば麺", "qty": 2, "unit": "玉", "rt": "count"}, {"item": "豚こま切れ肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "キャベツ", "qty": 0.2, "unit": "玉", "rt": "count"}, {"item": "にんじん", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "ソース", "qty": 3, "unit": "大さじ", "rt": "tbsp"}], "steps": ["豚肉と野菜を炒める。", "麺を加えほぐしながら炒める。", "ソースで味付けする。"], "tips": ["麺は少し水を入れてほぐす。"]}, {"id": "reimen", "name": "冷やし中華", "genre": "麺", "emoji": "🍜", "time": 20, "cost": 280, "kcal": 480, "difficulty": 1, "type": "ご飯・麺", "required": ["中華麺", "卵", "きゅうり"], "ingredients": [{"item": "中華麺", "qty": 2, "unit": "玉", "rt": "count"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "きゅうり", "qty": 1, "unit": "本", "rt": "count"}, {"item": "ハム", "qty": 4, "unit": "枚", "rt": "count"}, {"item": "醤油", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "酢", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["麺を茹でて冷水で締める。", "錦糸卵・きゅうり・ハムを千切りにする。", "具をのせタレをかける。"], "tips": ["麺をしっかり締めるとコシが出る。"]}, {"id": "harumaki", "name": "春巻き", "genre": "中", "emoji": "🥟", "time": 40, "cost": 300, "kcal": 420, "difficulty": 3, "type": "主菜", "required": ["豚こま切れ肉", "春巻きの皮"], "ingredients": [{"item": "豚こま切れ肉", "qty": 150, "unit": "g", "rt": "g"}, {"item": "春巻きの皮", "qty": 10, "unit": "枚", "rt": "count"}, {"item": "たけのこ", "qty": 100, "unit": "g", "rt": "g"}, {"item": "春雨", "qty": 40, "unit": "g", "rt": "g"}, {"item": "オイスターソース", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["具を炒め味付けしとろみをつけ冷ます。", "皮で包む。", "170℃でこんがり揚げる。"], "tips": ["具を冷ましてから包むと破れにくい。"]}, {"id": "bang-bang-ji", "name": "バンバンジー", "genre": "中", "emoji": "🍗", "time": 20, "cost": 220, "kcal": 340, "difficulty": 1, "type": "主菜", "required": ["鶏むね肉", "きゅうり"], "ingredients": [{"item": "鶏むね肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "きゅうり", "qty": 1, "unit": "本", "rt": "count"}, {"item": "練りごま", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "酢", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["鶏むねを茹でて裂く。", "きゅうりを千切りにする。", "ごまだれをかける。"], "tips": ["茹で汁の中で冷ますとしっとり。"]}, {"id": "pot-au-feu", "name": "ポトフ", "genre": "仏", "emoji": "🍲", "time": 60, "cost": 420, "kcal": 320, "difficulty": 1, "type": "主菜", "required": ["ウインナー", "じゃがいも", "にんじん", "キャベツ"], "ingredients": [{"item": "ウインナー", "qty": 6, "unit": "本", "rt": "count"}, {"item": "じゃがいも", "qty": 2, "unit": "個", "rt": "count"}, {"item": "にんじん", "qty": 1, "unit": "本", "rt": "count"}, {"item": "キャベツ", "qty": 0.25, "unit": "玉", "rt": "count"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "コンソメ", "qty": 2, "unit": "個", "rt": "count"}], "steps": ["野菜を大きめに切る。", "鍋に水・コンソメと野菜を入れる。", "ウインナーを加え40分煮込む。"], "tips": ["大きく切って素材の味を活かす。"]}, {"id": "ratatouille", "name": "ラタトゥイユ", "genre": "仏", "emoji": "🍆", "time": 40, "cost": 360, "kcal": 180, "difficulty": 2, "type": "副菜・サラダ", "required": ["なす", "ズッキーニ", "トマト", "玉ねぎ"], "ingredients": [{"item": "なす", "qty": 2, "unit": "本", "rt": "count"}, {"item": "ズッキーニ", "qty": 1, "unit": "本", "rt": "count"}, {"item": "トマト", "qty": 2, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "パプリカ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "オリーブオイル", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["野菜を角切りにする。", "にんにくとオリーブオイルで炒める。", "トマトを加え20分煮込む。"], "tips": ["冷やしても美味しい作り置き。"]}, {"id": "quiche", "name": "キッシュ", "genre": "仏", "emoji": "🥧", "time": 50, "cost": 400, "kcal": 480, "difficulty": 3, "type": "主菜", "required": ["卵", "ベーコン", "ほうれん草", "牛乳"], "ingredients": [{"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "ベーコン", "qty": 80, "unit": "g", "rt": "g"}, {"item": "ほうれん草", "qty": 0.5, "unit": "束", "rt": "count"}, {"item": "牛乳", "qty": 150, "unit": "ml", "rt": "ml"}, {"item": "生クリーム", "qty": 100, "unit": "ml", "rt": "ml"}, {"item": "チーズ", "qty": 50, "unit": "g", "rt": "g"}, {"item": "冷凍パイシート", "qty": 1, "unit": "枚", "rt": "count"}], "steps": ["具材を炒める。", "卵・牛乳・生クリームを混ぜる。", "パイシートに流しオーブンで30分焼く。"], "tips": ["アパレイユはしっかり混ぜる。"]}, {"id": "galette", "name": "ガレット", "genre": "仏", "emoji": "🥞", "time": 20, "cost": 260, "kcal": 380, "difficulty": 2, "type": "ご飯・麺", "required": ["そば粉", "卵", "チーズ"], "ingredients": [{"item": "そば粉", "qty": 100, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "チーズ", "qty": 40, "unit": "g", "rt": "g"}, {"item": "ハム", "qty": 2, "unit": "枚", "rt": "count"}, {"item": "牛乳", "qty": 150, "unit": "ml", "rt": "ml"}], "steps": ["そば粉・水・牛乳で生地を作る。", "薄く焼く。", "卵・チーズ・ハムをのせ四角に折る。"], "tips": ["生地は薄く広げるのがコツ。"]}, {"id": "meuniere-fr", "name": "白身魚のムニエル", "genre": "仏", "emoji": "🐟", "time": 20, "cost": 360, "kcal": 380, "difficulty": 2, "type": "主菜", "required": ["白身魚"], "ingredients": [{"item": "白身魚", "qty": 2, "unit": "切れ", "rt": "count"}, {"item": "小麦粉", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 20, "unit": "g", "rt": "g"}, {"item": "レモン", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["魚に塩こしょうし小麦粉をまぶす。", "バターでこんがり焼く。", "レモンとパセリを添える。"], "tips": ["焦がしバターで香ばしく。"]}, {"id": "croque", "name": "クロックムッシュ", "genre": "仏", "emoji": "🥪", "time": 20, "cost": 280, "kcal": 520, "difficulty": 2, "type": "ご飯・麺", "required": ["食パン", "チーズ", "ハム", "牛乳"], "ingredients": [{"item": "食パン", "qty": 2, "unit": "枚", "rt": "count"}, {"item": "チーズ", "qty": 60, "unit": "g", "rt": "g"}, {"item": "ハム", "qty": 4, "unit": "枚", "rt": "count"}, {"item": "牛乳", "qty": 150, "unit": "ml", "rt": "ml"}, {"item": "小麦粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 10, "unit": "g", "rt": "g"}], "steps": ["ホワイトソースを作る。", "パンにハム・チーズを挟む。", "ソースとチーズをのせ焼く。"], "tips": ["卵をのせればクロックマダム。"]}, {"id": "margherita", "name": "マルゲリータ", "genre": "伊", "emoji": "🍕", "time": 30, "cost": 360, "kcal": 620, "difficulty": 2, "type": "ご飯・麺", "required": ["ピザ生地", "トマト", "チーズ"], "ingredients": [{"item": "ピザ生地", "qty": 1, "unit": "枚", "rt": "count"}, {"item": "トマト", "qty": 1, "unit": "個", "rt": "count"}, {"item": "モッツァレラチーズ", "qty": 100, "unit": "g", "rt": "g"}, {"item": "バジル", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "トマトソース", "qty": 4, "unit": "大さじ", "rt": "tbsp"}], "steps": ["生地にトマトソースを塗る。", "トマトとチーズをのせる。", "高温のオーブンで焼きバジルをのせる。"], "tips": ["高温で短時間で焼くのがコツ。"]}, {"id": "bolognese", "name": "ボロネーゼ", "genre": "伊", "emoji": "🍝", "time": 40, "cost": 340, "kcal": 680, "difficulty": 2, "type": "ご飯・麺", "required": ["パスタ", "ひき肉", "玉ねぎ"], "ingredients": [{"item": "パスタ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ひき肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "にんじん", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "トマト缶", "qty": 1, "unit": "缶", "rt": "count"}, {"item": "赤ワイン", "qty": 50, "unit": "ml", "rt": "ml"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["野菜をみじん切りにする。", "ひき肉と炒め赤ワインを加える。", "トマト缶で20分煮込みパスタに絡める。"], "tips": ["みじん切り野菜でコクを出す。"]}, {"id": "vongole", "name": "ボンゴレ", "genre": "伊", "emoji": "🍝", "time": 25, "cost": 420, "kcal": 520, "difficulty": 2, "type": "ご飯・麺", "required": ["パスタ", "あさり", "にんにく"], "ingredients": [{"item": "パスタ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "あさり", "qty": 200, "unit": "g", "rt": "g"}, {"item": "にんにく", "qty": 2, "unit": "片", "rt": "clove"}, {"item": "白ワイン", "qty": 50, "unit": "ml", "rt": "ml"}, {"item": "オリーブオイル", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "鷹の爪", "qty": 1, "unit": "本", "rt": "count"}], "steps": ["あさりを砂抜きする。", "にんにくとあさりを白ワインで蒸す。", "茹でたパスタを和える。"], "tips": ["あさりの旨味をパスタに吸わせる。"]}, {"id": "gnocchi", "name": "ニョッキ", "genre": "伊", "emoji": "🥟", "time": 40, "cost": 280, "kcal": 480, "difficulty": 3, "type": "ご飯・麺", "required": ["じゃがいも", "チーズ"], "ingredients": [{"item": "じゃがいも", "qty": 3, "unit": "個", "rt": "count"}, {"item": "小麦粉", "qty": 100, "unit": "g", "rt": "g"}, {"item": "トマトソース", "qty": 150, "unit": "ml", "rt": "ml"}, {"item": "チーズ", "qty": 40, "unit": "g", "rt": "g"}], "steps": ["じゃがいもを茹でて潰す。", "小麦粉と練り成形する。", "茹でてソースを絡める。"], "tips": ["フォークで模様をつけるとソースが絡む。"]}, {"id": "caprese", "name": "カプレーゼ", "genre": "伊", "emoji": "🍅", "time": 10, "cost": 320, "kcal": 240, "difficulty": 1, "type": "副菜・サラダ", "required": ["トマト", "モッツァレラチーズ"], "ingredients": [{"item": "トマト", "qty": 2, "unit": "個", "rt": "count"}, {"item": "モッツァレラチーズ", "qty": 100, "unit": "g", "rt": "g"}, {"item": "バジル", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "オリーブオイル", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "塩", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["トマトとチーズを薄切りにする。", "交互に並べる。", "オリーブオイルと塩、バジルをのせる。"], "tips": ["良いオリーブオイルで格段に。"]}, {"id": "aglio", "name": "アーリオオーリオ", "genre": "伊", "emoji": "🍝", "time": 15, "cost": 160, "kcal": 520, "difficulty": 2, "type": "ご飯・麺", "required": ["パスタ", "にんにく"], "ingredients": [{"item": "パスタ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "にんにく", "qty": 3, "unit": "片", "rt": "clove"}, {"item": "オリーブオイル", "qty": 4, "unit": "大さじ", "rt": "tbsp"}, {"item": "鷹の爪", "qty": 1, "unit": "本", "rt": "count"}, {"item": "塩", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["にんにくを薄切りにする。", "弱火でオイルに香りを移す。", "茹で汁で乳化させパスタを和える。"], "tips": ["乳化させるととろみととコクが出る。"]}, {"id": "minestrone", "name": "ミネストローネ", "genre": "伊", "emoji": "🥣", "time": 30, "cost": 280, "kcal": 180, "difficulty": 1, "type": "汁物", "required": ["トマト缶", "玉ねぎ", "にんじん"], "ingredients": [{"item": "トマト缶", "qty": 0.5, "unit": "缶", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "にんじん", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "じゃがいも", "qty": 1, "unit": "個", "rt": "count"}, {"item": "ベーコン", "qty": 40, "unit": "g", "rt": "g"}, {"item": "コンソメ", "qty": 1, "unit": "個", "rt": "count"}], "steps": ["野菜を角切りにする。", "ベーコンと炒める。", "トマト缶・水・コンソメで20分煮る。"], "tips": ["野菜を小さく揃えると食べやすい。"]}, {"id": "piccata-chicken", "name": "チキンのピカタ", "genre": "伊", "emoji": "🍗", "time": 20, "cost": 260, "kcal": 440, "difficulty": 2, "type": "主菜", "required": ["鶏むね肉", "卵"], "ingredients": [{"item": "鶏むね肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "粉チーズ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "小麦粉", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "オリーブオイル", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["鶏肉をそぎ切りにし小麦粉をまぶす。", "卵と粉チーズの液にくぐらせる。", "オリーブオイルで焼く。"], "tips": ["チーズ入り卵液でふんわり。"]}, {"id": "hijiki-ni", "name": "ひじきの煮物", "genre": "副", "emoji": "🥢", "time": 25, "cost": 140, "kcal": 120, "difficulty": 1, "type": "副菜・サラダ", "required": ["ひじき", "にんじん"], "ingredients": [{"item": "ひじき", "qty": 15, "unit": "g", "rt": "g"}, {"item": "にんじん", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "油揚げ", "qty": 1, "unit": "枚", "rt": "count"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["ひじきを戻す。", "具を炒める。", "調味料とだしで煮含める。"], "tips": ["作り置きにも便利。"]}, {"id": "kabocha-ni", "name": "かぼちゃの煮物", "genre": "副", "emoji": "🎃", "time": 20, "cost": 160, "kcal": 160, "difficulty": 1, "type": "副菜・サラダ", "required": ["かぼちゃ"], "ingredients": [{"item": "かぼちゃ", "qty": 0.25, "unit": "個", "rt": "count"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "みりん", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["かぼちゃを一口大に切る。", "だしと調味料で煮る。", "落とし蓋で15分煮含める。"], "tips": ["皮を下にして煮崩れ防止。"]}, {"id": "hourenso-goma-2", "name": "ほうれん草のごま和え", "genre": "副", "emoji": "🥬", "time": 10, "cost": 120, "kcal": 80, "difficulty": 1, "type": "副菜・サラダ", "required": ["ほうれん草"], "ingredients": [{"item": "ほうれん草", "qty": 1, "unit": "束", "rt": "count"}, {"item": "白すりごま", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["ほうれん草を茹でて絞る。", "ごま・醤油・砂糖で和える。"], "tips": ["水気をよく絞る。"]}, {"id": "kimpira-renkon", "name": "れんこんのきんぴら", "genre": "副", "emoji": "🥢", "time": 15, "cost": 140, "kcal": 120, "difficulty": 1, "type": "副菜・サラダ", "required": ["れんこん"], "ingredients": [{"item": "れんこん", "qty": 1, "unit": "節", "rt": "count"}, {"item": "醤油", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "ごま油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "鷹の爪", "qty": 1, "unit": "本", "rt": "count"}], "steps": ["れんこんを薄切りにし酢水にさらす。", "ごま油で炒める。", "調味料で炒め煮にする。"], "tips": ["シャキシャキ感を残す。"]}, {"id": "caesar-salad", "name": "シーザーサラダ", "genre": "副", "emoji": "🥗", "time": 10, "cost": 240, "kcal": 220, "difficulty": 1, "type": "副菜・サラダ", "required": ["レタス"], "ingredients": [{"item": "レタス", "qty": 0.5, "unit": "玉", "rt": "count"}, {"item": "ベーコン", "qty": 40, "unit": "g", "rt": "g"}, {"item": "粉チーズ", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "マヨネーズ", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "牛乳", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "クルトン", "qty": 20, "unit": "g", "rt": "g"}], "steps": ["レタスをちぎる。", "ベーコンをカリカリに焼く。", "ドレッシングを和えチーズとクルトンをのせる。"], "tips": ["カリカリベーコンが食感のアクセント。"]}, {"id": "coleslaw", "name": "コールスロー", "genre": "副", "emoji": "🥗", "time": 15, "cost": 160, "kcal": 140, "difficulty": 1, "type": "副菜・サラダ", "required": ["キャベツ", "にんじん"], "ingredients": [{"item": "キャベツ", "qty": 0.25, "unit": "玉", "rt": "count"}, {"item": "にんじん", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "コーン", "qty": 50, "unit": "g", "rt": "g"}, {"item": "マヨネーズ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "酢", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["野菜を千切りにし塩もみする。", "水気を絞る。", "マヨ・酢・砂糖で和える。"], "tips": ["塩もみで水っぽくならない。"]}, {"id": "german-potato", "name": "ジャーマンポテト", "genre": "副", "emoji": "🥔", "time": 20, "cost": 200, "kcal": 280, "difficulty": 1, "type": "副菜・サラダ", "required": ["じゃがいも", "ベーコン"], "ingredients": [{"item": "じゃがいも", "qty": 3, "unit": "個", "rt": "count"}, {"item": "ベーコン", "qty": 60, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["じゃがいもを茹でる。", "ベーコン・玉ねぎ・にんにくを炒める。", "じゃがいもを加え炒め塩こしょうで味付け。"], "tips": ["じゃがいもは少し焼き色をつける。"]}, {"id": "tamago-salad", "name": "卵サラダ", "genre": "副", "emoji": "🥚", "time": 15, "cost": 140, "kcal": 200, "difficulty": 1, "type": "副菜・サラダ", "required": ["卵"], "ingredients": [{"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "きゅうり", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "マヨネーズ", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["ゆで卵を作り潰す。", "きゅうりを薄切り塩もみする。", "マヨネーズで和える。"], "tips": ["粗めに潰すと食感が良い。"]}, {"id": "corn-potage", "name": "コーンポタージュ", "genre": "汁", "emoji": "🥣", "time": 20, "cost": 200, "kcal": 180, "difficulty": 2, "type": "汁物", "required": ["コーン缶", "牛乳"], "ingredients": [{"item": "コーン缶", "qty": 1, "unit": "缶", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "牛乳", "qty": 300, "unit": "ml", "rt": "ml"}, {"item": "バター", "qty": 15, "unit": "g", "rt": "g"}, {"item": "コンソメ", "qty": 1, "unit": "個", "rt": "count"}], "steps": ["玉ねぎを炒める。", "コーンと水・コンソメで煮てミキサーにかける。", "牛乳でのばし温める。"], "tips": ["濾すとなめらかな口当たり。"]}, {"id": "clam-chowder", "name": "クラムチャウダー", "genre": "汁", "emoji": "🥣", "time": 30, "cost": 360, "kcal": 280, "difficulty": 2, "type": "汁物", "required": ["あさり", "じゃがいも", "牛乳"], "ingredients": [{"item": "あさり", "qty": 150, "unit": "g", "rt": "g"}, {"item": "じゃがいも", "qty": 1, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "ベーコン", "qty": 40, "unit": "g", "rt": "g"}, {"item": "牛乳", "qty": 300, "unit": "ml", "rt": "ml"}, {"item": "小麦粉", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["野菜とベーコンを炒める。", "小麦粉を振り牛乳でのばす。", "あさりを加え煮る。"], "tips": ["あさりの旨味がスープのベース。"]}, {"id": "onion-gratin-soup", "name": "オニオングラタンスープ", "genre": "汁", "emoji": "🧅", "time": 40, "cost": 240, "kcal": 260, "difficulty": 2, "type": "汁物", "required": ["玉ねぎ", "チーズ"], "ingredients": [{"item": "玉ねぎ", "qty": 2, "unit": "個", "rt": "count"}, {"item": "バター", "qty": 20, "unit": "g", "rt": "g"}, {"item": "コンソメ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "バゲット", "qty": 2, "unit": "枚", "rt": "count"}, {"item": "チーズ", "qty": 50, "unit": "g", "rt": "g"}], "steps": ["玉ねぎをあめ色まで炒める。", "水・コンソメで煮る。", "バゲットとチーズをのせ焼く。"], "tips": ["玉ねぎをあめ色にするのが味の決め手。"]}, {"id": "wakame-soup", "name": "わかめスープ", "genre": "汁", "emoji": "🥣", "time": 8, "cost": 80, "kcal": 40, "difficulty": 1, "type": "汁物", "required": ["わかめ"], "ingredients": [{"item": "わかめ", "qty": 3, "unit": "g", "rt": "g"}, {"item": "長ねぎ", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "鶏がらスープの素", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "ごま油", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "白ごま", "qty": 1, "unit": "小さじ", "rt": "tsp"}], "steps": ["水と鶏がらスープを煮立てる。", "わかめとねぎを入れる。", "ごま油と白ごまで仕上げる。"], "tips": ["仕上げのごま油で香りよく。"]}, {"id": "oden", "name": "おでん", "genre": "和", "emoji": "🍢", "time": 60, "cost": 400, "kcal": 320, "difficulty": 1, "type": "主菜", "required": ["大根", "卵", "こんにゃく"], "ingredients": [{"item": "大根", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "卵", "qty": 4, "unit": "個", "rt": "count"}, {"item": "こんにゃく", "qty": 1, "unit": "枚", "rt": "count"}, {"item": "ちくわ", "qty": 4, "unit": "本", "rt": "count"}, {"item": "だし汁", "qty": 800, "unit": "ml", "rt": "ml"}, {"item": "醤油", "qty": 3, "unit": "大さじ", "rt": "tbsp"}], "steps": ["大根を下茹でする。", "だしと調味料を煮立てる。", "具材を入れ40分煮込む。"], "tips": ["一度冷ますと味が染みる。"]}, {"id": "gyu-gobo", "name": "牛ごぼう", "genre": "和", "emoji": "🥩", "time": 20, "cost": 300, "kcal": 380, "difficulty": 1, "type": "主菜", "required": ["牛こま切れ肉", "ごぼう"], "ingredients": [{"item": "牛こま切れ肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ごぼう", "qty": 1, "unit": "本", "rt": "count"}, {"item": "醤油", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["ごぼうをささがきにする。", "牛肉とごぼうを炒める。", "調味料で煮絡める。"], "tips": ["ご飯のお供に最適。"]}, {"id": "katsudon", "name": "カツ丼", "genre": "丼", "emoji": "🍚", "time": 20, "cost": 380, "kcal": 820, "difficulty": 2, "type": "ご飯・麺", "required": ["とんかつ", "卵", "玉ねぎ", "ご飯"], "ingredients": [{"item": "とんかつ", "qty": 2, "unit": "枚", "rt": "count"}, {"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "めんつゆ(3倍)", "qty": 4, "unit": "大さじ", "rt": "tbsp"}, {"item": "水", "qty": 150, "unit": "ml", "rt": "ml"}], "steps": ["玉ねぎを煮る。", "切ったとんかつを乗せ卵でとじる。", "ご飯に乗せる。"], "tips": ["卵は半熟でとじる。"]}, {"id": "tendon", "name": "天丼", "genre": "丼", "emoji": "🍤", "time": 30, "cost": 420, "kcal": 780, "difficulty": 3, "type": "ご飯・麺", "required": ["エビ", "ご飯"], "ingredients": [{"item": "エビ", "qty": 4, "unit": "尾", "rt": "count"}, {"item": "なす", "qty": 1, "unit": "本", "rt": "count"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "天ぷら粉", "qty": 100, "unit": "g", "rt": "g"}, {"item": "めんつゆ(3倍)", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["天ぷらを揚げる。", "めんつゆと砂糖でタレを作る。", "ご飯に天ぷらを乗せタレをかける。"], "tips": ["タレは少し煮詰めると丼に合う。"]}, {"id": "takikomi", "name": "五目炊き込みご飯", "genre": "和", "emoji": "🍚", "time": 60, "cost": 300, "kcal": 480, "difficulty": 2, "type": "ご飯・麺", "required": ["米", "鶏もも肉", "にんじん"], "ingredients": [{"item": "米", "qty": 2, "unit": "合", "rt": "count"}, {"item": "鶏もも肉", "qty": 100, "unit": "g", "rt": "g"}, {"item": "にんじん", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "しいたけ", "qty": 3, "unit": "個", "rt": "count"}, {"item": "油揚げ", "qty": 1, "unit": "枚", "rt": "count"}, {"item": "醤油", "qty": 3, "unit": "大さじ", "rt": "tbsp"}], "steps": ["米を研ぐ。", "具材を切り調味料と米を炊飯器に入れる。", "炊いて蒸らす。"], "tips": ["具は米の上に広げて炊く。"]}, {"id": "ankake-tofu", "name": "あんかけ豆腐", "genre": "和", "emoji": "🍲", "time": 15, "cost": 160, "kcal": 220, "difficulty": 1, "type": "主菜", "required": ["豆腐"], "ingredients": [{"item": "豆腐", "qty": 1, "unit": "丁", "rt": "count"}, {"item": "鶏ひき肉", "qty": 80, "unit": "g", "rt": "g"}, {"item": "だし汁", "qty": 200, "unit": "ml", "rt": "ml"}, {"item": "醤油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "生姜", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["豆腐を温める。", "ひき肉とだしであんを作る。", "とろみをつけ豆腐にかける。"], "tips": ["生姜あんで体が温まる。"]}, {"id": "hayashi", "name": "ハヤシライス", "genre": "洋", "emoji": "🍛", "time": 40, "cost": 420, "kcal": 620, "difficulty": 2, "type": "ご飯・麺", "required": ["牛こま切れ肉", "玉ねぎ", "ご飯"], "ingredients": [{"item": "牛こま切れ肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "デミグラスソース", "qty": 1, "unit": "缶", "rt": "count"}, {"item": "ケチャップ", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "赤ワイン", "qty": 50, "unit": "ml", "rt": "ml"}], "steps": ["牛肉と玉ねぎを炒める。", "赤ワインとデミグラスを加え煮込む。", "ご飯にかける。"], "tips": ["バターを加えるとコクが増す。"]}, {"id": "loco-moco", "name": "ロコモコ", "genre": "洋", "emoji": "🍚", "time": 30, "cost": 360, "kcal": 720, "difficulty": 2, "type": "ご飯・麺", "required": ["ひき肉", "卵", "玉ねぎ", "ご飯"], "ingredients": [{"item": "ひき肉", "qty": 250, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "ケチャップ", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "ウスターソース", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["ハンバーグを作り焼く。", "目玉焼きを作る。", "ご飯にハンバーグと目玉焼きを乗せソースをかける。"], "tips": ["半熟卵を絡めて食べる。"]}, {"id": "chicken-nanban-2", "name": "チキン南蛮", "genre": "洋", "emoji": "🍗", "time": 30, "cost": 280, "kcal": 640, "difficulty": 2, "type": "主菜", "required": ["鶏むね肉", "卵"], "ingredients": [{"item": "鶏むね肉", "qty": 300, "unit": "g", "rt": "g"}, {"item": "卵", "qty": 1, "unit": "個", "rt": "count"}, {"item": "小麦粉", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "酢", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "砂糖", "qty": 2, "unit": "大さじ", "rt": "tbsp"}, {"item": "マヨネーズ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}], "steps": ["鶏に衣をつけ揚げ焼き。", "甘酢を絡める。", "タルタルソースをかける。"], "tips": ["甘酢に漬けてしっとり。"]}, {"id": "napolitan-2", "name": "スパゲティナポリタン", "genre": "洋", "emoji": "🍝", "time": 20, "cost": 260, "kcal": 640, "difficulty": 1, "type": "ご飯・麺", "required": ["パスタ", "ウインナー", "ピーマン"], "ingredients": [{"item": "パスタ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ウインナー", "qty": 4, "unit": "本", "rt": "count"}, {"item": "ピーマン", "qty": 2, "unit": "個", "rt": "count"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "ケチャップ", "qty": 5, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 10, "unit": "g", "rt": "g"}], "steps": ["具を炒める。", "ケチャップを炒め酸味を飛ばす。", "茹でたパスタを和える。"], "tips": ["喫茶店風はバター多めで。"]}, {"id": "potato-gratin", "name": "ポテトグラタン", "genre": "洋", "emoji": "🥔", "time": 40, "cost": 300, "kcal": 480, "difficulty": 2, "type": "副菜・サラダ", "required": ["じゃがいも", "牛乳", "チーズ"], "ingredients": [{"item": "じゃがいも", "qty": 3, "unit": "個", "rt": "count"}, {"item": "牛乳", "qty": 300, "unit": "ml", "rt": "ml"}, {"item": "生クリーム", "qty": 100, "unit": "ml", "rt": "ml"}, {"item": "チーズ", "qty": 60, "unit": "g", "rt": "g"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}], "steps": ["じゃがいもを薄切りにする。", "牛乳と生クリームで軽く煮る。", "チーズをのせオーブンで焼く。"], "tips": ["にんにくを効かせると本格的。"]}, {"id": "tenshinhan", "name": "天津飯", "genre": "丼", "emoji": "🍚", "time": 20, "cost": 280, "kcal": 620, "difficulty": 2, "type": "ご飯・麺", "required": ["卵", "かに風味かまぼこ", "ご飯"], "ingredients": [{"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "かに風味かまぼこ", "qty": 4, "unit": "本", "rt": "count"}, {"item": "ご飯", "qty": 400, "unit": "g", "rt": "g"}, {"item": "鶏がらスープの素", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "酢", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["卵とかにかまでオムレツを作る。", "ご飯に乗せる。", "甘酢あんをかける。"], "tips": ["あんは好みで甘酢か塩あんに。"]}, {"id": "ebi-chili-2", "name": "海老のチリソース", "genre": "中", "emoji": "🦐", "time": 20, "cost": 420, "kcal": 340, "difficulty": 2, "type": "主菜", "required": ["エビ"], "ingredients": [{"item": "エビ", "qty": 200, "unit": "g", "rt": "g"}, {"item": "ケチャップ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "豆板醤", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "にんにく", "qty": 1, "unit": "片", "rt": "clove"}, {"item": "長ねぎ", "qty": 0.5, "unit": "本", "rt": "count"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["エビに下味と片栗粉をつける。", "にんにく・豆板醤を炒める。", "ケチャップとエビを炒め煮にする。"], "tips": ["長ねぎのみじん切りで風味アップ。"]}, {"id": "nira-tama", "name": "ニラ玉", "genre": "中", "emoji": "🍳", "time": 10, "cost": 180, "kcal": 260, "difficulty": 1, "type": "主菜", "required": ["ニラ", "卵"], "ingredients": [{"item": "ニラ", "qty": 1, "unit": "束", "rt": "count"}, {"item": "卵", "qty": 3, "unit": "個", "rt": "count"}, {"item": "鶏がらスープの素", "qty": 1, "unit": "小さじ", "rt": "tsp"}, {"item": "ごま油", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "塩こしょう", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["卵を溶き半熟に炒め取り出す。", "ニラを炒める。", "卵を戻し合わせる。"], "tips": ["卵をふんわり仕上げる。"]}, {"id": "chinese-cabbage-cream", "name": "白菜のクリーム煮", "genre": "中", "emoji": "🥬", "time": 20, "cost": 240, "kcal": 280, "difficulty": 2, "type": "主菜", "required": ["白菜", "牛乳"], "ingredients": [{"item": "白菜", "qty": 0.25, "unit": "株", "rt": "count"}, {"item": "豚こま切れ肉", "qty": 100, "unit": "g", "rt": "g"}, {"item": "牛乳", "qty": 300, "unit": "ml", "rt": "ml"}, {"item": "鶏がらスープの素", "qty": 1, "unit": "大さじ", "rt": "tbsp"}, {"item": "片栗粉", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["白菜と豚肉を炒める。", "牛乳とスープで煮る。", "とろみをつける。"], "tips": ["白菜の甘みが引き立つ。"]}, {"id": "penne-arrabbiata", "name": "ペンネアラビアータ", "genre": "伊", "emoji": "🍝", "time": 20, "cost": 240, "kcal": 520, "difficulty": 2, "type": "ご飯・麺", "required": ["ペンネ", "トマト缶", "にんにく"], "ingredients": [{"item": "ペンネ", "qty": 160, "unit": "g", "rt": "g"}, {"item": "トマト缶", "qty": 1, "unit": "缶", "rt": "count"}, {"item": "にんにく", "qty": 2, "unit": "片", "rt": "clove"}, {"item": "鷹の爪", "qty": 1, "unit": "本", "rt": "count"}, {"item": "オリーブオイル", "qty": 3, "unit": "大さじ", "rt": "tbsp"}], "steps": ["にんにくと鷹の爪をオイルで炒める。", "トマト缶を加え煮詰める。", "茹でたペンネを和える。"], "tips": ["辛さは鷹の爪で調整。"]}, {"id": "risotto", "name": "きのこのリゾット", "genre": "伊", "emoji": "🍚", "time": 30, "cost": 280, "kcal": 480, "difficulty": 3, "type": "ご飯・麺", "required": ["米", "きのこ", "チーズ"], "ingredients": [{"item": "米", "qty": 1, "unit": "合", "rt": "count"}, {"item": "きのこ(お好み)", "qty": 150, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 0.5, "unit": "個", "rt": "count"}, {"item": "コンソメ", "qty": 1, "unit": "個", "rt": "count"}, {"item": "粉チーズ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "バター", "qty": 15, "unit": "g", "rt": "g"}], "steps": ["玉ねぎと米を炒める。", "スープを少しずつ加え煮る。", "チーズとバターで仕上げる。"], "tips": ["米は洗わず炒めるのがコツ。"]}, {"id": "lasagna", "name": "ラザニア", "genre": "伊", "emoji": "🧀", "time": 60, "cost": 480, "kcal": 680, "difficulty": 3, "type": "主菜", "required": ["ラザニア", "ひき肉", "チーズ", "牛乳"], "ingredients": [{"item": "ラザニア", "qty": 6, "unit": "枚", "rt": "count"}, {"item": "ひき肉", "qty": 200, "unit": "g", "rt": "g"}, {"item": "トマト缶", "qty": 1, "unit": "缶", "rt": "count"}, {"item": "牛乳", "qty": 300, "unit": "ml", "rt": "ml"}, {"item": "チーズ", "qty": 80, "unit": "g", "rt": "g"}, {"item": "玉ねぎ", "qty": 1, "unit": "個", "rt": "count"}], "steps": ["ミートソースとホワイトソースを作る。", "ラザニアと交互に重ねる。", "チーズをのせオーブンで焼く。"], "tips": ["重ねて焼くだけで豪華に。"]}, {"id": "piccata-2", "name": "ピザトースト(イタリア風)", "genre": "伊", "emoji": "🍞", "time": 15, "cost": 240, "kcal": 420, "difficulty": 1, "type": "ご飯・麺", "required": ["食パン", "トマト", "チーズ"], "ingredients": [{"item": "食パン", "qty": 2, "unit": "枚", "rt": "count"}, {"item": "トマト", "qty": 1, "unit": "個", "rt": "count"}, {"item": "モッツァレラチーズ", "qty": 60, "unit": "g", "rt": "g"}, {"item": "バジル", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "オリーブオイル", "qty": 1, "unit": "大さじ", "rt": "tbsp"}], "steps": ["パンにトマトを並べる。", "チーズをのせる。", "焼いてバジルとオイルをかける。"], "tips": ["モッツァレラでとろける食感。"]}, {"id": "broccoli-salad", "name": "ブロッコリーサラダ", "genre": "副", "emoji": "🥦", "time": 15, "cost": 220, "kcal": 180, "difficulty": 1, "type": "副菜・サラダ", "required": ["ブロッコリー"], "ingredients": [{"item": "ブロッコリー", "qty": 1, "unit": "株", "rt": "count"}, {"item": "ゆで卵", "qty": 2, "unit": "個", "rt": "count"}, {"item": "ベーコン", "qty": 40, "unit": "g", "rt": "g"}, {"item": "マヨネーズ", "qty": 3, "unit": "大さじ", "rt": "tbsp"}], "steps": ["ブロッコリーを茹でる。", "ベーコンを炒める。", "ゆで卵とマヨで和える。"], "tips": ["栄養満点の一品。"]}, {"id": "chikuwa-cheese", "name": "ちくわチーズ", "genre": "副", "emoji": "🧀", "time": 10, "cost": 140, "kcal": 180, "difficulty": 1, "type": "副菜・サラダ", "required": ["ちくわ", "チーズ"], "ingredients": [{"item": "ちくわ", "qty": 4, "unit": "本", "rt": "count"}, {"item": "チーズ", "qty": 40, "unit": "g", "rt": "g"}, {"item": "青のり", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["ちくわにチーズを詰める。", "トースターで焼く。", "青のりをふる。"], "tips": ["お弁当やおつまみに。"]}, {"id": "miso-soup-tofu", "name": "豆腐とねぎの味噌汁", "genre": "汁", "emoji": "🥣", "time": 10, "cost": 80, "kcal": 70, "difficulty": 1, "type": "汁物", "required": ["豆腐"], "ingredients": [{"item": "豆腐", "qty": 0.5, "unit": "丁", "rt": "count"}, {"item": "長ねぎ", "qty": 0.3, "unit": "本", "rt": "count"}, {"item": "だし汁", "qty": 400, "unit": "ml", "rt": "ml"}, {"item": "味噌", "qty": 2, "unit": "大さじ", "rt": "tbsp"}], "steps": ["だしを温める。", "豆腐とねぎを入れる。", "味噌を溶く。"], "tips": ["定番の味噌汁。"]}, {"id": "caprese-pasta", "name": "トマトとモッツァレラの冷製パスタ", "genre": "伊", "emoji": "🍝", "time": 20, "cost": 340, "kcal": 480, "difficulty": 2, "type": "ご飯・麺", "required": ["パスタ", "トマト", "モッツァレラチーズ"], "ingredients": [{"item": "パスタ", "qty": 160, "unit": "g", "rt": "g"}, {"item": "トマト", "qty": 2, "unit": "個", "rt": "count"}, {"item": "モッツァレラチーズ", "qty": 80, "unit": "g", "rt": "g"}, {"item": "バジル", "qty": 1, "unit": "少々", "rt": "pinch"}, {"item": "オリーブオイル", "qty": 3, "unit": "大さじ", "rt": "tbsp"}, {"item": "塩", "qty": 1, "unit": "少々", "rt": "pinch"}], "steps": ["トマトとチーズを角切りにしオイルと和える。", "パスタを茹でて冷水で締める。", "和えてバジルをのせる。"], "tips": ["よく冷やすと美味しい。"]}]</script>
+<script>
+/* ====== データ ====== */
+const RECIPES = JSON.parse(document.getElementById('recipeData').textContent);
+const MUSHROOM_CHILDREN = ["しいたけ","しめじ","えのき","まいたけ","エリンギ","マッシュルーム","なめこ"];
+
+// 組み込みレシピ + マイレシピ を合わせた検索対象
+function allRecipes(){
+  return RECIPES.concat(loadMyRecipes().map(toRecipeShape));
+}
+
+const CATEGORIES = [
+  {ic:"🥩",name:"肉・魚",items:["鶏もも肉","鶏むね肉","鶏ひき肉","豚バラ肉","豚こま切れ肉","豚ロース肉","牛こま切れ肉","ひき肉","ベーコン","ハム","ウインナー","ツナ缶","サーモン","ぶり","さば","白身魚","エビ","あさり","かに風味かまぼこ","ちくわ","とんかつ"]},
+  {ic:"🥬",name:"野菜",items:["玉ねぎ","にんにく","生姜","にんじん","じゃがいも","キャベツ","白菜","レタス","ほうれん草","小松菜","もやし","ピーマン","パプリカ","トマト","なす","ズッキーニ","ブロッコリー","かぼちゃ","大根","れんこん","ごぼう","きゅうり","長ねぎ","にら","豆苗","コーン缶"]},
+  {ic:"🍄",name:"きのこ",expander:true,items:[]},
+  {ic:"🥚",name:"卵・乳製品・豆腐",items:["卵","牛乳","生クリーム","チーズ","モッツァレラチーズ","豆腐","油揚げ","こんにゃく","納豆"]},
+  {ic:"🍚",name:"主食・粉・皮",items:["ご飯","米","パスタ","ペンネ","マカロニ","ラザニア","うどん","そば","そば粉","中華麺","焼きそば麺","食パン","ピザ生地","餃子の皮","春巻きの皮","トマト缶","ひじき","わかめ","キムチ"]},
+];
+
+/* ====== 状態 ====== */
+let selected = new Set();
+let servings = 2;
+let sortKey = "match";
+let sortAsc = true;
+let favOnly = false;
+let favorites = new Set(loadFavs());
+function loadFavs(){try{const r=localStorage.getItem('fridge_favs_v1');return r?JSON.parse(r):[];}catch(e){return window.__favs||[];}}
+function saveFavs(){try{localStorage.setItem('fridge_favs_v1',JSON.stringify([...favorites]));}catch(e){window.__favs=[...favorites];}}
+let activeGenres = new Set();
+let activeType = "__all";
+let lastResults = [];
+let lastAlmost = [];
+
+/* ====== 分量計算 ====== */
+function toFraction(n){
+  const w=Math.floor(n), f=n-w;
+  let fs="";
+  if(Math.abs(f-0.5)<0.06)fs="1/2";
+  else if(Math.abs(f-0.25)<0.06)fs="1/4";
+  else if(Math.abs(f-0.75)<0.06)fs="3/4";
+  else if(Math.abs(f-0.33)<0.06)fs="1/3";
+  else if(Math.abs(f-0.67)<0.06)fs="2/3";
+  else if(f>0.06)return n.toFixed(1);
+  if(w===0&&fs)return fs;
+  if(fs)return w+"と"+fs;
+  return ""+w;
+}
+function fmtQty(ing,serv){
+  const v=ing.qty*serv/2, rt=ing.rt, unit=ing.unit;
+  if(rt==="pinch")return {a:"",u:unit};
+  if(rt==="g"||rt==="ml"){let r=Math.max(5,Math.round(v/5)*5);return {a:""+r,u:unit};}
+  if(rt==="tbsp"||rt==="tsp"){let r=Math.round(v*2)/2;if(r<0.5)r=0.5;return {a:(r%1===0?""+r:toFraction(r)),u:unit};}
+  let r=Math.round(v*4)/4;if(r<0.25)r=0.25;return {a:toFraction(r),u:unit};
+}
+
+/* ====== マッチング ====== */
+function normSel(){const s=new Set(selected);if(MUSHROOM_CHILDREN.some(c=>s.has(c)))s.add("きのこ");return s;}
+function findRecipes(){const s=normSel();return allRecipes().filter(r=>r.required.every(i=>s.has(i)));}
+function findAlmost(){const s=normSel();return allRecipes().map(r=>({r,miss:r.required.filter(i=>!s.has(i))})).filter(x=>x.miss.length===1);}
+function matchScore(r){const s=normSel();const hit=r.required.filter(i=>s.has(i)).length;return hit/r.required.length;}
+
+/* ====== カテゴリ描画 ====== */
+function renderCats(){
+  const root=document.getElementById('cats');root.innerHTML='';
+  CATEGORIES.forEach(cat=>{
+    const d=document.createElement('div');d.className='cat';
+    let h=`<div class="cat-name"><span class="ic">${cat.ic}</span>${cat.name}</div><div class="chips">`;
+    if(cat.expander)h+=`<div class="chip expander" data-item="きのこ" data-exp="1">きのこ</div>`;
+    cat.items.forEach(it=>h+=`<div class="chip" data-item="${it}">${it}</div>`);
+    h+=`</div>`;
+    if(cat.expander){
+      h+=`<div class="subchips" id="subMush"><div class="lab">「きのこ」だけでもOK。種類を指定するなら選んでね</div><div class="chips">`;
+      MUSHROOM_CHILDREN.forEach(c=>h+=`<div class="chip" data-item="${c}">${c}</div>`);
+      h+=`</div></div>`;
+    }
+    d.innerHTML=h;root.appendChild(d);
+  });
+  root.querySelectorAll('.chip').forEach(ch=>{
+    ch.addEventListener('click',()=>{
+      if(ch.dataset.exp){document.getElementById('subMush').classList.toggle('open');ch.classList.toggle('open');}
+      const it=ch.dataset.item;
+      if(selected.has(it)){selected.delete(it);ch.classList.remove('on');}
+      else{selected.add(it);ch.classList.add('on');}
+      updateDock();
+      // 結果表示中ならリアルタイム更新
+      if(document.getElementById('results').style.display!=='none'){
+        if(selected.size===0){
+          document.getElementById('results').style.display='none';
+          document.getElementById('controls').classList.remove('show');
+        }else{
+          lastResults=findRecipes();lastAlmost=findAlmost();renderResults();
+        }
+      }
+    });
+  });
+}
+
+/* ====== ドック ====== */
+function updateDock(){
+  const dock=document.getElementById('dock');
+  const cnt=document.getElementById('dockCount');
+  const items=document.getElementById('dockItems');
+  if(selected.size===0){dock.classList.add('hide');return;}
+  dock.classList.remove('hide');
+  cnt.textContent=`${selected.size}品の材料を選択中`;
+  items.textContent=[...selected].join('・');
+}
+
+/* ====== 検索実行 ====== */
+function runSearch(){
+  lastResults=findRecipes();
+  lastAlmost=findAlmost();
+  document.getElementById('controls').classList.add('show');
+  document.getElementById('results').style.display='block';
+  renderResults();
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function sortRecipes(list){
+  const arr=[...list];
+  const s=normSel();
+  if(sortKey==="match"){
+    // おすすめ: 選んだ材料をたくさん使う順 → 同数なら品数(required)が多い順 → 安い順
+    const usedCount=r=>r.required.filter(i=>s.has(i)).length;
+    arr.sort((a,b)=>usedCount(b)-usedCount(a)||b.required.length-a.required.length||a.cost-b.cost);
+  }else{
+    arr.sort((a,b)=>{
+      let d=a[sortKey]-b[sortKey];
+      return sortAsc?d:-d;
+    });
+  }
+  return arr;
+}
+
+function diffDots(n){return "●".repeat(n)+"○".repeat(3-n);}
+function diffLabel(n){return n===1?"かんたん":n===2?"ふつう":"本格";}
+
+function renderResults(){
+  const meta=document.getElementById('resultMeta');
+  const list=document.getElementById('cardList');
+  const almostWrap=document.getElementById('almostWrap');
+  const gf=document.getElementById('genreFilter');
+  const tt=document.getElementById('typeTabs');
+
+  // --- 料理タイプのタブ(第1軸) ---
+  const TYPE_ORDER=["主菜","ご飯・麺","汁物","副菜・サラダ"];
+  const ttOuter=document.querySelector('.type-tabs-outer');
+  if(favOnly){
+    ttOuter.style.display='none';
+  }else{
+    tt.style.display='flex'; // 中身は下で構築
+    // 各タイプの件数(全結果ベース)
+    const typeCount={};
+    lastResults.forEach(r=>{typeCount[r.type]=(typeCount[r.type]||0)+1;});
+    const typesPresent=TYPE_ORDER.filter(t=>typeCount[t]>0);
+    // タイプが1種類以下ならタブ自体不要(「すべて」と1タブだけになり冗長)
+    if(typesPresent.length<=1){
+      ttOuter.style.display='none';
+      activeType="__all";
+    }else{
+      ttOuter.style.display='block';
+      // activeTypeが現在の結果に存在しなければ「すべて」に戻す
+      if(activeType!=="__all" && !typeCount[activeType])activeType="__all";
+      let tabs=`<button class="ttab${activeType==='__all'?' on':''}" data-type="__all">すべて<span class="cnt">${lastResults.length}</span></button>`;
+      tabs+=typesPresent.map(t=>`<button class="ttab${activeType===t?' on':''}" data-type="${t}">${t}<span class="cnt">${typeCount[t]}</span></button>`).join('');
+      tt.innerHTML=tabs;
+      tt.querySelectorAll('.ttab').forEach(b=>{
+        b.addEventListener('click',()=>{activeType=b.dataset.type;renderResults();});
+      });
+    }
+  }
+
+  // --- タイプで絞る ---
+  let shown=lastResults;
+  if(favOnly)shown=shown.filter(r=>favorites.has(r.id));
+  if(!favOnly && activeType!=="__all")shown=shown.filter(r=>r.type===activeType);
+
+  // --- ジャンル絞り込み(第2軸): 現在のタイプ内に存在するジャンルのみ ---
+  const GENRE_LABEL={'和':'和食','洋':'洋食','中':'中華','麺':'麺類','丼':'丼もの','汁':'汁物','副':'副菜','仏':'フレンチ','伊':'イタリアン','他':'その他'};
+  const genrePool=(!favOnly && activeType!=="__all")?lastResults.filter(r=>r.type===activeType):lastResults;
+  const genresInResult=[...new Set(genrePool.map(r=>r.genre))];
+  // タイプ内に存在しないジャンルが選択中なら解除
+  [...activeGenres].forEach(g=>{if(!genresInResult.includes(g))activeGenres.delete(g);});
+  if(!favOnly && genresInResult.length>1){
+    gf.style.display='flex';
+    gf.innerHTML=`<span class="gf-lab">味つけ:</span><div class="gchip${activeGenres.size===0?' on':''}" data-g="__all">すべて</div>`+
+      genresInResult.map(g=>`<div class="gchip${activeGenres.has(g)?' on':''}" data-g="${g}">${GENRE_LABEL[g]||g}</div>`).join('');
+    gf.querySelectorAll('.gchip').forEach(c=>{
+      c.addEventListener('click',()=>{
+        const g=c.dataset.g;
+        if(g==='__all'){activeGenres.clear();}
+        else{if(activeGenres.has(g))activeGenres.delete(g);else activeGenres.add(g);}
+        renderResults();
+      });
+    });
+  }else{gf.style.display='none';gf.innerHTML='';}
+
+  if(activeGenres.size>0)shown=shown.filter(r=>activeGenres.has(r.genre));
+  shown=sortRecipes(shown);
+
+  // メタ
+  const q=[...selected].join('・');
+  if(favOnly){
+    meta.innerHTML=`お気に入り <b>${shown.length}</b> 品`;
+  }else{
+    meta.innerHTML=`<b>${shown.length}</b> 品見つかりました　<span class="q">（${q||'材料未選択'} で検索）</span>`;
+  }
+
+  // カード
+  if(shown.length===0){
+    const filtered=(activeGenres.size>0||activeType!=="__all")&&lastResults.length>0;
+    list.innerHTML=`<div class="empty"><div class="big">${favOnly?'♡':(filtered?'🔍':'🍳')}</div><div class="ttl">${favOnly?'お気に入りはまだありません':(filtered?'この絞り込みに合う料理はありません':'作れる料理が見つかりません')}</div><div class="sub">${favOnly?'カードのハートを押すとここに集まります':(filtered?'タブを「すべて」に戻すと作れる料理が表示されます':'材料を足すか、卵・玉ねぎ・ご飯など"つぶしが効く"材料を選ぶと見つかりやすいです')}</div></div>`;
+  }else{
+    list.innerHTML=shown.map(r=>cardHTML(r)).join('');
+  }
+
+  // あと1つ
+  if(!favOnly && lastAlmost.length>0 && selected.size>0){
+    const am=lastAlmost.slice(0,6);
+    almostWrap.innerHTML=`<div class="almost-head">🛒 あと1つ買えば作れる</div>`+
+      am.map(x=>cardHTML(x.r,x.miss[0])).join('');
+  }else{
+    almostWrap.innerHTML='';
+  }
+
+  bindCards();
+}
+
+function cardHTML(r,missing){
+  const s=normSel();
+  const stats=`<div class="card-stats">
+    <span class="stat cost">¥${Math.round(r.cost*servings/2)}<span class="lab">/${servings}人前</span></span>
+    <span class="stat">⏱ ${r.time}<span class="lab">分</span></span>
+    <span class="stat"><span class="diff-dots">${diffDots(r.difficulty)}</span> ${diffLabel(r.difficulty)}</span>
+    <span class="stat">🔥 ${Math.round(r.kcal*servings/2)}<span class="lab">kcal</span></span>
+  </div>`;
+  const uses=`<div class="card-uses">使う材料：${r.required.map(i=>{
+    const hit=s.has(i);return `<span class="u${hit?' hit':''}">${i}</span>`;
+  }).join('')}</div>`;
+  const missHTML=missing?`<div class="almost-miss">不足：<span class="add">${missing}</span> を買えばOK <button class="mini-memo" onclick="event.stopPropagation();memoAddQuick('${escapeAttr(missing)}')">🛒メモ</button></div>`:'';
+  const favOn=favorites.has(r.id)?' on':'';
+  const myBadge=r.isMine?`<span class="card-genre" style="background:#7BA06B;color:#fff;margin-left:5px;">MY</span>`:'';
+  return `<div class="card${missing?' almost-card':''}" data-id="${r.id}">
+    <button class="fav-btn${favOn}" data-fav="${r.id}">${favorites.has(r.id)?'♥':'♡'}</button>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-emoji">${r.emoji}</div>
+        <div class="card-h">
+          <div class="card-name">${r.name}</div>
+          <span class="card-genre">${r.genre}</span>${myBadge}
+        </div>
+      </div>
+      ${stats}${uses}${missHTML}
+    </div>
+  </div>`;
+}
+
+function bindCards(){
+  document.querySelectorAll('.card').forEach(c=>{
+    c.addEventListener('click',e=>{
+      if(e.target.closest('.fav-btn'))return;
+      openModal(c.dataset.id);
+    });
+  });
+  document.querySelectorAll('.fav-btn').forEach(b=>{
+    b.addEventListener('click',e=>{
+      e.stopPropagation();
+      const id=b.dataset.fav;
+      if(favorites.has(id))favorites.delete(id);else favorites.add(id);
+      saveFavs();
+      renderResults();
+    });
+  });
+}
+
+/* ====== モーダル ====== */
+let modalServings=2;
+function openModal(id){
+  const r=allRecipes().find(x=>x.id===id);if(!r)return;
+  modalServings=servings;
+  renderModal(r);
+  document.getElementById('modalBg').classList.add('show');
+  document.getElementById('modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modalBg').classList.remove('show');
+  document.getElementById('modal').classList.remove('show');
+  document.body.style.overflow='';
+}
+function renderModal(r){
+  const s=normSel();
+  const ingHTML=r.ingredients.map(ing=>{
+    const q=fmtQty(ing,modalServings);
+    const hit=[...s].some(sel=>ing.item.includes(sel));
+    const qtyStr=q.a===""?`<span class="ing-qty none">${q.u}</span>`:`<span class="ing-qty">${q.a} ${q.u}</span>`;
+    const memoBtn=hit?'':`<button class="ing-memo" onclick="memoAddQuick('${escapeAttr(ing.item)}')">＋メモ</button>`;
+    return `<div class="ing-row${hit?' hit':''}">
+      <span class="ing-name">${ing.item}${hit?'<span class="badge">在庫</span>':''}</span>
+      <span class="ing-right">${qtyStr}${memoBtn}</span></div>`;
+  }).join('');
+  const stepHTML=r.steps.map(st=>`<div class="step"><div class="step-txt">${st}</div></div>`).join('');
+  const tipsHTML=r.tips&&r.tips.length?`<div class="tips"><span class="ic">💡</span><div class="tips-txt">${r.tips.join(' ')}</div></div>`:'';
+
+  document.getElementById('modalScroll').innerHTML=`
+    <div class="m-head">
+      <div class="m-emoji">${r.emoji}</div>
+      <div><div class="m-title">${r.name}</div><span class="m-genre">${r.genre}料理</span></div>
+      <button class="m-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="m-stats">
+      <div class="m-stat"><div class="v">¥<span id="mCost">${Math.round(r.cost*modalServings/2)}</span></div><div class="l">材料費(¥<span id="mCostPer">${Math.round(r.cost/2)}</span>/人)</div></div>
+      <div class="m-stat"><div class="v">${r.time}<span style="font-size:12px">分</span></div><div class="l">調理時間</div></div>
+      <div class="m-stat"><div class="v" style="font-size:14px">${diffLabel(r.difficulty)}</div><div class="l">難易度</div></div>
+      <div class="m-stat"><div class="v"><span id="mKcal">${Math.round(r.kcal*modalServings/2)}</span><span style="font-size:11px">kcal</span></div><div class="l">1食あたり</div></div>
+    </div>
+    <div class="m-serv">
+      <div class="m-serv-top"><span class="m-serv-lab">👥 分量を人数で調整</span><span class="m-serv-val"><span id="mServNum">${modalServings}</span> 人前</span></div>
+      <div class="slider-wrap">
+        <input type="range" class="slider" id="mServSlider" min="1" max="10" value="${modalServings}" step="1">
+        <div class="serv-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+      </div>
+    </div>
+    <div class="m-sec-t">材料</div>
+    <div class="ing-list" id="ingList">${ingHTML}</div>
+    <div class="m-sec-t">作り方</div>
+    <div class="step-list">${stepHTML}</div>
+    ${tipsHTML}
+    <div class="m-cost-note">※ 材料費・カロリーは一般的な目安です。店舗・時期・分量により変動します。</div>
+  `;
+  // モーダル内スライダー
+  const ms=document.getElementById('mServSlider');
+  ms.addEventListener('input',()=>{
+    modalServings=parseInt(ms.value);
+    document.getElementById('mServNum').textContent=modalServings;
+    document.getElementById('mCost').textContent=Math.round(r.cost*modalServings/2);
+    document.getElementById('mKcal').textContent=Math.round(r.kcal*modalServings/2);
+    // 材料再計算
+    document.getElementById('ingList').innerHTML=r.ingredients.map(ing=>{
+      const q=fmtQty(ing,modalServings);
+      const hit=[...s].some(sel=>ing.item.includes(sel));
+      const qtyStr=q.a===""?`<span class="ing-qty none">${q.u}</span>`:`<span class="ing-qty">${q.a} ${q.u}</span>`;
+      const memoBtn=hit?'':`<button class="ing-memo" onclick="memoAddQuick('${escapeAttr(ing.item)}')">＋メモ</button>`;
+      return `<div class="ing-row${hit?' hit':''}"><span class="ing-name">${ing.item}${hit?'<span class="badge">在庫</span>':''}</span><span class="ing-right">${qtyStr}${memoBtn}</span></div>`;
+    }).join('');
+  });
+}
+
+/* ====== ソート/人前/お気に入り ====== */
+document.getElementById('servSlider').addEventListener('input',e=>{
+  servings=parseInt(e.target.value);
+  document.getElementById('servNum').textContent=servings;
+  if(document.getElementById('results').style.display!=='none')renderResults();
+});
+document.getElementById('sortRow').addEventListener('click',e=>{
+  const btn=e.target.closest('.sortbtn');if(!btn||btn.id==='favToggle')return;
+  const key=btn.dataset.sort;
+  if(sortKey===key&&key!=='match'){sortAsc=!sortAsc;}
+  else{sortKey=key;sortAsc=true;}
+  document.querySelectorAll('.sortbtn').forEach(b=>{if(b.id!=='favToggle')b.classList.remove('on');});
+  btn.classList.add('on');
+  // 矢印
+  document.querySelectorAll('.sortbtn .ar').forEach(a=>a.textContent='');
+  if(key!=='match'){const ar=btn.querySelector('.ar');if(ar)ar.textContent=sortAsc?'↑':'↓';}
+  renderResults();
+});
+document.getElementById('favToggle').addEventListener('click',()=>{
+  favOnly=!favOnly;
+  document.getElementById('favToggle').classList.toggle('on',favOnly);
+  document.getElementById('favToggle').textContent=favOnly?'♥ お気に入り':'♡ お気に入り';
+  renderResults();
+});
+
+function clearAll(){
+  selected.clear();favOnly=false;activeGenres.clear();activeType="__all";
+  document.querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.chip.open').forEach(c=>c.classList.remove('open'));
+  document.querySelectorAll('.subchips.open').forEach(s=>s.classList.remove('open'));
+  document.getElementById('favToggle').classList.remove('on');
+  document.getElementById('favToggle').textContent='♡ お気に入り';
+  updateDock();
+  document.getElementById('results').style.display='none';
+  document.getElementById('controls').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ====== テーマ ====== */
+const TITLES={plain:"冷蔵庫レシピ",mario:"クッキング キングダム",disney:"おうちレシピ・ドリーム"};
+const KICKERS={plain:"FRIDGE TO TABLE",mario:"LET'S-A COOK!",disney:"A PINCH OF MAGIC"};
+function setTheme(t){
+  document.body.className='t-'+t;
+  document.getElementById('heroTitle').textContent=TITLES[t];
+  document.querySelector('.kicker').textContent=KICKERS[t];
+  document.querySelectorAll('.theme-pill').forEach(p=>p.classList.toggle('on',p.dataset.t===t));
+}
+
+/* ============================================================
+   買い物メモ
+   ============================================================ */
+function loadMemo(){try{const r=localStorage.getItem('shopping_memo_v1');return r?JSON.parse(r):[];}catch(e){return window.__memo||[];}}
+function saveMemo(arr){try{localStorage.setItem('shopping_memo_v1',JSON.stringify(arr));}catch(e){window.__memo=arr;}updateBadges();}
+function addMemoItem(text){
+  text=(text||'').trim();if(!text)return;
+  const arr=loadMemo();
+  if(arr.some(m=>m.text===text&&!m.checked)){showToast('「'+text+'」は既にメモにあります');return;}
+  arr.push({id:'m'+Date.now()+Math.random().toString(36).slice(2,6),text,checked:false,addedAt:Date.now()});
+  saveMemo(arr);
+}
+function openMemo(){renderMemo();document.getElementById('memoBg').classList.add('show');document.getElementById('memoSheet').classList.add('show');document.body.style.overflow='hidden';}
+function closeMemo(){document.getElementById('memoBg').classList.remove('show');document.getElementById('memoSheet').classList.remove('show');document.body.style.overflow='';}
+function renderMemo(){
+  const arr=loadMemo();
+  const cnt=document.getElementById('memoCnt');
+  const unchecked=arr.filter(m=>!m.checked).length;
+  cnt.textContent=arr.length?`（${unchecked}件）`:'';
+  const sc=document.getElementById('memoScroll');
+  let html=`<div class="memo-add">
+    <input class="memo-input" id="memoInput" placeholder="材料を入力して追加" onkeydown="if(event.key==='Enter')memoAddFromInput()">
+    <button class="memo-addbtn" onclick="memoAddFromInput()">追加</button>
+  </div>`;
+  if(arr.length===0){
+    html+=`<div class="memo-empty"><div class="big">🛒</div><div class="sub">買い物メモは空です。<br>レシピの材料や「あと1つで作れる」から追加したり、上の欄で直接入力できます。</div></div>`;
+  }else{
+    // 未チェックを上、チェック済みを下
+    const sorted=[...arr].sort((a,b)=>(a.checked?1:0)-(b.checked?1:0));
+    html+=sorted.map(m=>`<div class="memo-item${m.checked?' checked':''}">
+      <div class="memo-check${m.checked?' on':''}" onclick="memoToggle('${m.id}')">${m.checked?'✓':''}</div>
+      <span class="memo-text">${escapeHtml(m.text)}</span>
+      <button class="memo-del" onclick="memoDel('${m.id}')">✕</button>
+    </div>`).join('');
+    html+=`<div class="memo-tools">
+      <button class="memo-tool" onclick="memoClearChecked()">✓ 済みを消す</button>
+      <button class="memo-tool" onclick="memoClearAll()">すべて消す</button>
+    </div>`;
+  }
+  sc.innerHTML=html;
+}
+function memoAddFromInput(){const i=document.getElementById('memoInput');addMemoItem(i.value);i.value='';renderMemo();}
+function memoToggle(id){const arr=loadMemo();const m=arr.find(x=>x.id===id);if(m)m.checked=!m.checked;saveMemo(arr);renderMemo();}
+function memoDel(id){let arr=loadMemo();arr=arr.filter(x=>x.id!==id);saveMemo(arr);renderMemo();}
+function memoClearChecked(){let arr=loadMemo();arr=arr.filter(x=>!x.checked);saveMemo(arr);renderMemo();}
+function memoClearAll(){if(loadMemo().length&&!confirm('買い物メモをすべて消しますか？'))return;saveMemo([]);renderMemo();}
+
+/* 材料をメモに追加(レシピ詳細・あと1つ から呼ぶ) */
+function memoAddQuick(text){addMemoItem(text);showToast('「'+text+'」を買い物メモに追加しました');}
+
+/* ============================================================
+   マイレシピ
+   ============================================================ */
+function loadMyRecipes(){
+  // ログイン中はクラウドキャッシュを返す(裏で同期済み)。未ログインはlocalStorage
+  if(currentUser && cloudRecipes!==null) return cloudRecipes;
+  try{const r=localStorage.getItem('my_recipes_v1');return r?JSON.parse(r):[];}catch(e){return window.__myrec||[];}
+}
+function saveMyRecipesLocal(arr){try{localStorage.setItem('my_recipes_v1',JSON.stringify(arr));}catch(e){window.__myrec=arr;}}
+function saveMyRecipes(arr){
+  // 未ログイン時のみここでlocalStorage保存。ログイン時はクラウド側で別途処理
+  if(!currentUser) saveMyRecipesLocal(arr);
+  else cloudRecipes = arr;
+  updateBadges();
+}
+
+// 単位からroundType推定
+function guessRt(unit){
+  unit=(unit||'').trim();
+  if(/^(g|グラム|ｇ)$/i.test(unit))return 'g';
+  if(/^(ml|cc|ミリ|㏄|ｍｌ)$/i.test(unit))return 'ml';
+  if(/大さじ/.test(unit))return 'tbsp';
+  if(/小さじ/.test(unit))return 'tsp';
+  if(/(少々|ひとつまみ|適量|お好み)/.test(unit))return 'pinch';
+  if(/(個|枚|本|片|玉|株|丁|パック|缶|束|尾|切れ|杯|房|かけ)/.test(unit))return 'count';
+  return 'count';
+}
+// マイレシピを内部レシピ形式に変換(検索・モーダル用)
+function toRecipeShape(mr){
+  return {
+    id:mr.id, name:mr.name, genre:mr.genre||'他', emoji:mr.emoji||'🍽',
+    time:mr.time||0, cost:mr.cost||0, kcal:mr.kcal||0, difficulty:mr.difficulty||1,
+    required:mr.required||[],
+    ingredients:(mr.ingredients||[]).map(i=>({item:i.item,qty:(typeof i.qty==='number'?i.qty:parseFloat(i.qty)||1),unit:i.unit||'',rt:guessRt(i.unit)})),
+    steps:mr.steps||[], tips:mr.tips?[mr.tips]:[],
+    isMine:true, isPublic:!!mr.isPublic,
+  };
+}
+
+function openMyRecipes(){renderMyRecipes();document.getElementById('myrecBg').classList.add('show');document.getElementById('myrecSheet').classList.add('show');document.body.style.overflow='hidden';}
+function closeMyRecipes(){document.getElementById('myrecBg').classList.remove('show');document.getElementById('myrecSheet').classList.remove('show');document.body.style.overflow='';}
+function renderMyRecipes(){
+  const arr=loadMyRecipes();
+  document.getElementById('myrecCnt').textContent=arr.length?`（${arr.length}）`:'';
+  const sc=document.getElementById('myrecScroll');
+  // ログイン状態バナー
+  let banner='';
+  if(currentUser){
+    banner=`<div class="myrec-cloud on" onclick="openPublic()">☁️ クラウド保存中（${escapeHtml(currentUser.email||'')}）<span class="mc-link">みんなのレシピ →</span></div>`;
+  }else if(supa){
+    banner=`<div class="myrec-cloud off" onclick="openAccount()">📱 この端末だけに保存中。<span class="mc-link">ログインして公開・共有する →</span></div>`;
+  }
+  let html=banner+`<button class="myrec-newbtn" onclick="openForm()">＋ 新しいレシピを登録</button>`;
+  if(arr.length===0){
+    html+=`<div class="memo-empty"><div class="big">📝</div><div class="sub">まだマイレシピはありません。<br>自分の料理の材料・分量・作り方を登録すると、冷蔵庫検索にも出てきます。</div></div>`;
+  }else{
+    html+=arr.map(mr=>{
+      const ingCount=(mr.ingredients||[]).length, stepCount=(mr.steps||[]).length;
+      return `<div class="myrec-card">
+        <div class="myrec-top">
+          <span class="myrec-emoji">${mr.emoji||'🍽'}</span>
+          <div class="myrec-h">
+            <div class="myrec-name">${escapeHtml(mr.name)}
+              <span class="myrec-badge ${mr.isPublic?'pub':'priv'}">${mr.isPublic?'公開':'非公開'}</span>
+            </div>
+            <div class="myrec-meta">${mr.genre||'他'}・材料${ingCount}・手順${stepCount}</div>
+          </div>
+        </div>
+        <div class="myrec-acts">
+          <button class="myrec-act cook" onclick="viewMyRecipe('${mr.id}')">見る</button>
+          <button class="myrec-act" onclick="openForm('${mr.id}')">編集</button>
+          <button class="myrec-act danger" onclick="deleteMyRecipe('${mr.id}')">削除</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  sc.innerHTML=html;
+}
+function viewMyRecipe(id){closeMyRecipes();setTimeout(()=>openModal(id),120);}
+function deleteMyRecipe(id){
+  const arr=loadMyRecipes();const mr=arr.find(x=>x.id===id);
+  if(!confirm('「'+(mr?mr.name:'このレシピ')+'」を削除しますか？'))return;
+  if(currentUser && supa){
+    showToast('削除中...');
+    deleteRecipeCloud(id).then(res=>{
+      if(res.ok){ renderMyRecipes(); showToast('削除しました'); }
+      else { showToast('削除に失敗しました'); }
+    });
+  }else{
+    saveMyRecipes(arr.filter(x=>x.id!==id));renderMyRecipes();
+  }
+}
+
+/* ---- 登録/編集フォーム ---- */
+let formState=null;
+const EMOJI_CHOICES=['🍽','🍚','🍜','🍝','🍛','🥘','🍲','🥗','🍳','🥩','🍗','🐟','🍔','🥟','🍆','🥬','🍄','🍞','🥦','🦐','🍅','🌶','🧄'];
+const GENRE_CHOICES=['和','洋','中','伊','仏','麺','丼','汁','副','他'];
+
+function openForm(id){
+  const editing = id ? loadMyRecipes().find(x=>x.id===id) : null;
+  formState = editing ? JSON.parse(JSON.stringify(editing)) : {
+    id:'my'+Date.now()+Math.random().toString(36).slice(2,5),
+    name:'', emoji:'🍽', genre:'和', required:[], ingredients:[{item:'',qty:'',unit:''}],
+    steps:[''], tips:'', time:'', cost:'', kcal:'', difficulty:1, isPublic:false, createdAt:Date.now(),
+  };
+  document.getElementById('formTitle').textContent = editing ? 'レシピを編集' : '新しいレシピ';
+  renderForm();
+  document.getElementById('formBg').classList.add('show');
+  document.getElementById('formSheet').classList.add('show');
+  document.body.style.overflow='hidden';
+  // マイレシピ一覧の上に重ねて開くので一覧は閉じない(戻れる)
+}
+function closeForm(){document.getElementById('formBg').classList.remove('show');document.getElementById('formSheet').classList.remove('show');document.body.style.overflow='';}
+
+function renderForm(){
+  const f=formState;
+  const emojiHTML=EMOJI_CHOICES.map(e=>`<button class="emoji-opt${f.emoji===e?' on':''}" onclick="formSetEmoji('${e}')">${e}</button>`).join('');
+  const genreHTML=GENRE_CHOICES.map(g=>`<button class="genre-opt${f.genre===g?' on':''}" onclick="formSetGenre('${g}')">${g}</button>`).join('');
+  const ingHTML=f.ingredients.map((ing,i)=>`<div class="ing-edit-row">
+    <input class="form-input item" placeholder="材料名" value="${escapeAttr(ing.item)}" oninput="formIng(${i},'item',this.value)">
+    <input class="form-input qty" placeholder="分量" value="${escapeAttr(ing.qty)}" oninput="formIng(${i},'qty',this.value)">
+    <input class="form-input unit" placeholder="単位" value="${escapeAttr(ing.unit)}" oninput="formIng(${i},'unit',this.value)">
+    <button class="row-del" onclick="formDelIng(${i})">✕</button>
+  </div>`).join('');
+  const stepHTML=f.steps.map((s,i)=>`<div class="step-edit-row">
+    <span class="step-n">${i+1}</span>
+    <textarea class="form-input" placeholder="手順${i+1}" oninput="formStep(${i},this.value)" rows="2">${escapeHtml(s)}</textarea>
+    <button class="row-del" onclick="formDelStep(${i})">✕</button>
+  </div>`).join('');
+  // 必須材料(マッチング用)はingredientsのitemから自動。チェックで選べるUI
+  const reqCandidates=f.ingredients.map(i=>i.item.trim()).filter(Boolean);
+  const reqHTML=reqCandidates.length?reqCandidates.map(it=>`<button class="genre-opt${f.required.includes(it)?' on':''}" onclick="formToggleReq('${escapeAttr(it)}')">${escapeHtml(it)}</button>`).join(''):'<span style="font-size:12px;color:var(--ink-soft);">先に材料を入力すると、ここで「検索に使う材料」を選べます</span>';
+
+  document.getElementById('formScroll').innerHTML=`
+    <div class="form-err" id="formErr"></div>
+
+    <div class="form-group">
+      <div class="form-label">料理名 <span class="req">必須</span></div>
+      <input class="form-input" id="f_name" placeholder="例：母さんの肉じゃが" value="${escapeAttr(f.name)}" oninput="formState.name=this.value">
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">アイコン</div>
+      <div class="emoji-pick">${emojiHTML}</div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">ジャンル</div>
+      <div class="genre-pick">${genreHTML}</div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">材料と分量 <span class="req">必須</span></div>
+      <div class="row-list">${ingHTML}</div>
+      <button class="add-row" onclick="formAddIng()">＋ 材料を追加</button>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">検索に使う材料 <span class="opt">任意</span></div>
+      <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;line-height:1.5;">冷蔵庫検索でヒットさせたい主な材料を選びます（肉・野菜など。調味料は外すのがおすすめ）</div>
+      <div class="genre-pick">${reqHTML}</div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">作り方 <span class="req">必須</span></div>
+      <div class="row-list">${stepHTML}</div>
+      <button class="add-row" onclick="formAddStep()">＋ 手順を追加</button>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">コツ・メモ <span class="opt">任意</span></div>
+      <textarea class="form-input" placeholder="おいしく作るコツなど" oninput="formState.tips=this.value">${escapeHtml(f.tips||'')}</textarea>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">時間・費用など <span class="opt">任意</span></div>
+      <div class="form-grid">
+        <input class="form-input" placeholder="調理時間(分)" inputmode="numeric" value="${escapeAttr(f.time)}" oninput="formState.time=this.value">
+        <input class="form-input" placeholder="費用(円)" inputmode="numeric" value="${escapeAttr(f.cost)}" oninput="formState.cost=this.value">
+        <input class="form-input" placeholder="カロリー(kcal)" inputmode="numeric" value="${escapeAttr(f.kcal)}" oninput="formState.kcal=this.value">
+        <select class="form-input" onchange="formState.difficulty=parseInt(this.value)">
+          <option value="1"${f.difficulty===1?' selected':''}>かんたん</option>
+          <option value="2"${f.difficulty===2?' selected':''}>ふつう</option>
+          <option value="3"${f.difficulty===3?' selected':''}>本格</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="pub-toggle">
+        <div class="pub-info">
+          <div class="pub-t">${f.isPublic?'公開する':'自分だけ（非公開）'}</div>
+          <div class="pub-s">${f.isPublic?'アプリ版になったら、ほかの人もこのレシピを見られるようになります（今は自分の端末内だけに保存されます）':'この端末の中だけに保存されます'}</div>
+        </div>
+        <div class="toggle${f.isPublic?' on':''}" onclick="formTogglePublic()"></div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="form-btn cancel" onclick="closeForm()">やめる</button>
+      <button class="form-btn save" onclick="saveForm()">保存する</button>
+    </div>
+  `;
+}
+function formSetEmoji(e){formState.emoji=e;renderForm();}
+function formSetGenre(g){formState.genre=g;renderForm();}
+function formIng(i,key,val){formState.ingredients[i][key]=val; if(key==='item'){/* requiredの候補が変わるので再描画は重い→保存時に整合）*/}}
+function formAddIng(){formState.ingredients.push({item:'',qty:'',unit:''});renderForm();}
+function formDelIng(i){if(formState.ingredients.length<=1){formState.ingredients=[{item:'',qty:'',unit:''}];}else{formState.ingredients.splice(i,1);}renderForm();}
+function formStep(i,val){formState.steps[i]=val;}
+function formAddStep(){formState.steps.push('');renderForm();}
+function formDelStep(i){if(formState.steps.length<=1){formState.steps=[''];}else{formState.steps.splice(i,1);}renderForm();}
+function formToggleReq(it){const idx=formState.required.indexOf(it);if(idx>=0)formState.required.splice(idx,1);else formState.required.push(it);renderForm();}
+function formTogglePublic(){formState.isPublic=!formState.isPublic;renderForm();}
+
+function saveForm(){
+  const f=formState;
+  const err=document.getElementById('formErr');
+  // バリデーション
+  const name=(f.name||'').trim();
+  const ings=f.ingredients.filter(i=>(i.item||'').trim());
+  const steps=f.steps.filter(s=>(s||'').trim());
+  let problems=[];
+  if(!name)problems.push('料理名');
+  if(ings.length===0)problems.push('材料（1つ以上）');
+  if(steps.length===0)problems.push('作り方（1つ以上）');
+  if(problems.length){
+    err.textContent='次の項目を入力してください：'+problems.join('、');
+    err.style.display='block';
+    document.getElementById('formScroll').scrollTop=0;
+    return;
+  }
+  // requiredが空なら材料名から自動で主要そうなものを補完(調味料っぽいものを除く)
+  let required=f.required.filter(r=>ings.some(i=>i.item.trim()===r));
+  if(required.length===0){
+    const SEASONING=/(醤油|塩|砂糖|みりん|酒|味噌|油|こしょう|ソース|ケチャップ|マヨ|だし|片栗粉|小麦粉|酢|ごま|バター|にんにく|生姜|スープの素|豆板醤|わさび|のり|かつお節)/;
+    required=ings.map(i=>i.item.trim()).filter(it=>!SEASONING.test(it)).slice(0,4);
+    if(required.length===0)required=[ings[0].item.trim()];
+  }
+  const clean={
+    id:f.id, name, emoji:f.emoji||'🍽', genre:f.genre||'他',
+    required,
+    ingredients:ings.map(i=>({item:i.item.trim(),qty:(i.qty===''||i.qty==null)?1:(parseFloat(i.qty)||i.qty),unit:(i.unit||'').trim()})),
+    steps, tips:(f.tips||'').trim(),
+    time:f.time?parseInt(f.time)||0:0, cost:f.cost?parseInt(f.cost)||0:0,
+    kcal:f.kcal?parseInt(f.kcal)||0:0, difficulty:f.difficulty||1,
+    isPublic:!!f.isPublic, createdAt:f.createdAt||Date.now(), updatedAt:Date.now(),
+  };
+  const arr=loadMyRecipes();
+  const idx=arr.findIndex(x=>x.id===clean.id);
+  if(currentUser && supa){
+    // ログイン中: クラウドに保存
+    closeForm();
+    showToast('保存中...');
+    saveRecipeCloud(clean).then(res=>{
+      if(res.ok){ renderMyRecipes(); showToast(idx>=0?'レシピを更新しました':'レシピを登録しました'); }
+      else { showToast('保存に失敗しました: '+(res.reason||'')); }
+    });
+  }else{
+    // 未ログイン: ローカル保存(従来通り)
+    if(idx>=0)arr[idx]=clean; else arr.push(clean);
+    saveMyRecipes(arr);
+    closeForm();
+    renderMyRecipes();
+    showToast(idx>=0?'レシピを更新しました':'レシピを登録しました');
+  }
+}
+
+/* ============================================================
+   共通ユーティリティ
+   ============================================================ */
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escapeAttr(s){return escapeHtml(s);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toastT);window.__toastT=setTimeout(()=>t.classList.remove('show'),2400);}
+function updateBadges(){
+  const mb=document.getElementById('memoBadge');
+  const unchecked=loadMemo().filter(m=>!m.checked).length;
+  if(mb){if(unchecked>0){mb.style.display='flex';mb.textContent=unchecked;}else{mb.style.display='none';}}
+  const rb=document.getElementById('myrecBadge');
+  const rc=loadMyRecipes().length;
+  if(rb){if(rc>0){rb.style.display='flex';rb.textContent=rc;}else{rb.style.display='none';}}
+}
+
+renderCats();
+updateDock();
+updateBadges();
+
+/* ============================================================
+   Supabase 連携 (ログイン・クラウド保存・公開レシピ)
+   ============================================================ */
+function recipeToDb(mr, userId){
+  return {
+    id: mr.id, user_id: userId, name: mr.name, emoji: mr.emoji||'🍽',
+    genre: mr.genre||'他', required: mr.required||[],
+    ingredients: mr.ingredients||[], steps: mr.steps||[], tips: mr.tips||'',
+    time: mr.time||0, cost: mr.cost||0, kcal: mr.kcal||0,
+    difficulty: mr.difficulty||1, is_public: !!mr.isPublic,
+    created_at: mr.createdAt ? new Date(mr.createdAt).toISOString() : new Date().toISOString(),
+  };
+}
+function recipeFromDb(row){
+  return {
+    id: row.id, name: row.name, emoji: row.emoji||'🍽', genre: row.genre||'他',
+    required: row.required||[], ingredients: row.ingredients||[], steps: row.steps||[],
+    tips: row.tips||'', time: row.time||0, cost: row.cost||0, kcal: row.kcal||0,
+    difficulty: row.difficulty||1, isPublic: !!row.is_public,
+    createdAt: row.created_at ? new Date(row.created_at).getTime() : Date.now(),
+    user_id: row.user_id,
+  };
+}
+async function fetchMyCloudRecipes(){
+  if(!supa || !currentUser) return;
+  try{
+    const { data, error } = await supa.from('recipes').select('*').eq('user_id', currentUser.id).order('created_at',{ascending:false});
+    if(error){ console.warn('取得エラー', error); return; }
+    cloudRecipes = (data||[]).map(recipeFromDb);
+    updateBadges();
+  }catch(e){ console.warn('fetch失敗', e); }
+}
+async function saveRecipeCloud(mr){
+  if(!supa || !currentUser) return {ok:false, reason:'not_logged_in'};
+  try{
+    const row = recipeToDb(mr, currentUser.id);
+    // IDがuuid形式(ハイフン区切り)なら更新、独自形式(my...)ならIDを外して新規作成(DBが自動採番)
+    const isUuid = typeof row.id==='string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(row.id);
+    if(!isUuid){ delete row.id; }
+    const { error } = await supa.from('recipes').upsert(row);
+    if(error){ return {ok:false, reason:error.message}; }
+    await fetchMyCloudRecipes();
+    return {ok:true};
+  }catch(e){ return {ok:false, reason:String(e)}; }
+}
+async function deleteRecipeCloud(id){
+  if(!supa || !currentUser) return {ok:false};
+  try{
+    const { error } = await supa.from('recipes').delete().eq('id', id);
+    if(error){ return {ok:false, reason:error.message}; }
+    await fetchMyCloudRecipes();
+    return {ok:true};
+  }catch(e){ return {ok:false, reason:String(e)}; }
+}
+
+/* ---- アカウント ---- */
+function openAccount(){ if(!currentUser) authView='menu'; renderAccount(); document.getElementById('accountBg').classList.add('show'); document.getElementById('accountSheet').classList.add('show'); document.body.style.overflow='hidden'; }
+function closeAccount(){ document.getElementById('accountBg').classList.remove('show'); document.getElementById('accountSheet').classList.remove('show'); document.body.style.overflow=''; }
+let authView = 'menu'; // 'menu' | 'login' | 'signup' | 'verify'
+let pendingEmail = '';  // 認証コード待ちのメールアドレス
+
+function openAccountReset(){ authView='menu'; openAccount(); }
+
+function renderAccount(){
+  const sc = document.getElementById('accountScroll');
+  if(!supa){
+    sc.innerHTML = `<div class="memo-empty"><div class="big">📡</div><div class="sub">いまオフラインのようです。<br>インターネットにつながっていると、ログインしてレシピを公開・共有できます。</div></div>`;
+    return;
+  }
+  // ログイン済み
+  if(currentUser){
+    const localCount = (()=>{try{return JSON.parse(localStorage.getItem('my_recipes_v1')||'[]').length;}catch(e){return 0;}})();
+    sc.innerHTML = `
+      <div class="acc-status">
+        <div class="acc-avatar">✓</div>
+        <div class="acc-info">
+          <div class="acc-label">ログイン中</div>
+          <div class="acc-email">${escapeHtml(currentUser.email||'')}</div>
+        </div>
+      </div>
+      <div class="acc-note">レシピはクラウドに保存され、ほかの端末からも見られます。公開したレシピはみんなのレシピに並びます。</div>
+      ${localCount>0 ? `<button class="acc-btn upload" onclick="uploadLocalRecipes()">この端末に残っている${localCount}件をクラウドに移す</button>` : ''}
+      <button class="acc-btn" onclick="openPublic()">🌍 みんなのレシピを見る</button>
+      <button class="acc-btn logout" onclick="doLogout()">ログアウト</button>
+    `;
+    return;
+  }
+  // 未ログイン: authViewで分岐
+  if(authView==='menu'){
+    sc.innerHTML = `
+      <div class="acc-intro">ログインすると、登録したレシピがクラウドに保存されて、ほかの端末からも見られます。公開すれば、ほかの人にも使ってもらえます。</div>
+      <button class="acc-btn login" onclick="gotoAuth('login')">ログイン</button>
+      <button class="acc-btn signup" onclick="gotoAuth('signup')">新規登録（はじめての方）</button>
+    `;
+  }else if(authView==='login'){
+    sc.innerHTML = `
+      <button class="auth-back" onclick="gotoAuth('menu')">‹ 戻る</button>
+      <div class="auth-h">ログイン</div>
+      <div class="form-group">
+        <div class="form-label">メールアドレス</div>
+        <input class="form-input" id="loginEmail" type="email" inputmode="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <div class="form-label">パスワード</div>
+        <input class="form-input" id="loginPassword" type="password" placeholder="パスワード" autocomplete="current-password">
+      </div>
+      <div class="form-err" id="authErr"></div>
+      <button class="acc-btn login" onclick="doLogin()">ログイン</button>
+      <div class="acc-hint">パスワードを忘れた場合は、いったん新規登録と同じメールで登録し直すこともできます。</div>
+    `;
+  }else if(authView==='signup'){
+    sc.innerHTML = `
+      <button class="auth-back" onclick="gotoAuth('menu')">‹ 戻る</button>
+      <div class="auth-h">新規登録</div>
+      <div class="form-group">
+        <div class="form-label">メールアドレス</div>
+        <input class="form-input" id="suEmail" type="email" inputmode="email" placeholder="you@example.com" autocomplete="email" oninput="checkPwLive()">
+      </div>
+      <div class="form-group">
+        <div class="form-label">パスワード</div>
+        <input class="form-input" id="suPw1" type="password" placeholder="パスワード" oninput="checkPwLive()">
+      </div>
+      <div class="form-group">
+        <div class="form-label">パスワード（確認）</div>
+        <input class="form-input" id="suPw2" type="password" placeholder="もう一度入力" oninput="checkPwLive()">
+      </div>
+      <div class="pw-rules" id="pwRules">
+        <div class="pw-rule" id="rule-len">・6文字以上</div>
+        <div class="pw-rule" id="rule-alpha">・英字（大文字または小文字）を含む</div>
+        <div class="pw-rule" id="rule-num">・数字を含む</div>
+        <div class="pw-rule" id="rule-match">・確認用と一致している</div>
+      </div>
+      <div class="form-err" id="authErr"></div>
+      <button class="acc-btn signup" id="suBtn" onclick="doSignup()" disabled>登録する</button>
+      <div class="acc-hint">登録したメールアドレスに確認メールが届きます。メール内のリンクを押すと登録完了です。そのあとログインできます。</div>
+    `;
+  }else if(authView==='verify'){
+    sc.innerHTML = `
+      <div class="memo-empty">
+        <div class="big">📧</div>
+        <div class="sub"><b>${escapeHtml(pendingEmail)}</b> に確認メールを送りました。<br><br>メールを開いて、中の<b>リンクを押す</b>と登録完了です。<br>そのあと、下のボタンからログインしてください。<br><br><span style="font-size:11.5px;color:var(--ink-soft)">メールが届かないときは迷惑メールフォルダもご確認ください。</span></div>
+        <button class="acc-btn login" style="margin-top:18px;" onclick="gotoAuth('login')">ログイン画面へ</button>
+      </div>
+    `;
+  }
+}
+
+function gotoAuth(view){ authView=view; renderAccount(); }
+
+// パスワード強度のライブチェック
+function pwStatus(){
+  const pw1 = (document.getElementById('suPw1')||{}).value || '';
+  const pw2 = (document.getElementById('suPw2')||{}).value || '';
+  const email = ((document.getElementById('suEmail')||{}).value || '').trim();
+  return {
+    len: pw1.length>=6,
+    alpha: /[a-zA-Z]/.test(pw1),
+    num: /[0-9]/.test(pw1),
+    match: pw1.length>0 && pw1===pw2,
+    email: /.+@.+\..+/.test(email),
+  };
+}
+function checkPwLive(){
+  const s = pwStatus();
+  const set=(id,ok)=>{const el=document.getElementById(id); if(el) el.className='pw-rule'+(ok?' ok':'');};
+  set('rule-len', s.len); set('rule-alpha', s.alpha); set('rule-num', s.num); set('rule-match', s.match);
+  const btn = document.getElementById('suBtn');
+  if(btn) btn.disabled = !(s.len && s.alpha && s.num && s.match && s.email);
+}
+async function doSignup(){
+  const s = pwStatus();
+  const email = ((document.getElementById('suEmail')||{}).value||'').trim();
+  const pw = (document.getElementById('suPw1')||{}).value||'';
+  const err = document.getElementById('authErr');
+  if(!s.email){ err.textContent='メールアドレスを正しく入力してください'; err.style.display='block'; return; }
+  if(!(s.len && s.alpha && s.num)){ err.textContent='パスワードの条件を満たしていません'; err.style.display='block'; return; }
+  if(!s.match){ err.textContent='確認用パスワードが一致しません'; err.style.display='block'; return; }
+  err.style.display='none'; showToast('登録中...');
+  try{
+    const { data, error } = await supa.auth.signUp({ email, password: pw });
+    if(error){ err.textContent='登録エラー: '+error.message; err.style.display='block'; return; }
+    // セッションが即発行された(メール確認オフ)場合はそのままログイン
+    if(data.session){ await onLoggedIn(data.user); return; }
+    // メール確認待ち画面へ
+    pendingEmail = email;
+    authView = 'verify';
+    renderAccount();
+  }catch(e){ err.textContent='エラー: '+String(e); err.style.display='block'; }
+}
+
+async function doLogin(){
+  const email = ((document.getElementById('loginEmail')||{}).value||'').trim();
+  const pw = (document.getElementById('loginPassword')||{}).value||'';
+  const err = document.getElementById('authErr');
+  if(!email || !pw){ err.textContent='メールアドレスとパスワードを入力してください'; err.style.display='block'; return; }
+  err.style.display='none'; showToast('ログイン中...');
+  try{
+    const { data, error } = await supa.auth.signInWithPassword({ email, password: pw });
+    if(error){ err.textContent='ログインエラー: '+error.message; err.style.display='block'; return; }
+    if(data.user){ await onLoggedIn(data.user); }
+  }catch(e){ err.textContent='エラー: '+String(e); err.style.display='block'; }
+}
+async function doLogout(){
+  try{ await supa.auth.signOut(); }catch(e){}
+  currentUser = null; cloudRecipes = null;
+  updateAccountIcon(); updateBadges(); renderAccount();
+  showToast('ログアウトしました');
+}
+async function onLoggedIn(user){
+  currentUser = user;
+  await fetchMyCloudRecipes();
+  updateAccountIcon(); updateBadges(); renderAccount();
+  showToast('ログインしました');
+}
+function updateAccountIcon(){
+  const ic = document.getElementById('accountIcon');
+  if(ic) ic.textContent = currentUser ? '✅' : '👤';
+}
+async function uploadLocalRecipes(){
+  let local = [];
+  try{ local = JSON.parse(localStorage.getItem('my_recipes_v1')||'[]'); }catch(e){}
+  if(local.length===0){ showToast('移すレシピがありません'); return; }
+  showToast(`${local.length}件を移行中...`);
+  let ok=0;
+  for(const mr of local){
+    const copy = {...mr}; delete copy.id;
+    const row = recipeToDb(copy, currentUser.id); delete row.id;
+    try{ const { error } = await supa.from('recipes').insert(row); if(!error) ok++; }catch(e){}
+  }
+  if(ok>0){ localStorage.removeItem('my_recipes_v1'); }
+  await fetchMyCloudRecipes(); renderAccount();
+  showToast(`${ok}件をクラウドに移しました`);
+}
+
+/* ---- みんなのレシピ ---- */
+function openPublic(){ closeAccount(); closeMyRecipes(); renderPublicLoading(); document.getElementById('publicBg').classList.add('show'); document.getElementById('publicSheet').classList.add('show'); document.body.style.overflow='hidden'; loadPublicRecipes(); }
+function closePublic(){ document.getElementById('publicBg').classList.remove('show'); document.getElementById('publicSheet').classList.remove('show'); document.body.style.overflow=''; }
+function renderPublicLoading(){ document.getElementById('publicScroll').innerHTML = `<div class="memo-empty"><div class="big">⏳</div><div class="sub">みんなのレシピを読み込んでいます...</div></div>`; }
+let publicCache = [];
+async function loadPublicRecipes(){
+  if(!supa){ document.getElementById('publicScroll').innerHTML = `<div class="memo-empty"><div class="big">📡</div><div class="sub">オフラインのため読み込めません。ネットにつないで開き直してください。</div></div>`; return; }
+  try{
+    const { data, error } = await supa.from('recipes').select('*').eq('is_public', true).order('created_at',{ascending:false}).limit(200);
+    if(error){ document.getElementById('publicScroll').innerHTML = `<div class="memo-empty"><div class="big">⚠️</div><div class="sub">読み込みエラー: ${escapeHtml(error.message)}</div></div>`; return; }
+    publicCache = (data||[]).map(recipeFromDb);
+    document.getElementById('publicCnt').textContent = publicCache.length ? `（${publicCache.length}）` : '';
+    renderPublicList();
+  }catch(e){ document.getElementById('publicScroll').innerHTML = `<div class="memo-empty"><div class="big">⚠️</div><div class="sub">エラー: ${escapeHtml(String(e))}</div></div>`; }
+}
+function renderPublicList(){
+  const sc = document.getElementById('publicScroll');
+  if(publicCache.length===0){ sc.innerHTML = `<div class="memo-empty"><div class="big">🌱</div><div class="sub">まだ公開されたレシピがありません。<br>マイレシピを「公開」で登録すると、ここに並びます。</div></div>`; return; }
+  sc.innerHTML = publicCache.map(r=>{
+    const mine = currentUser && r.user_id===currentUser.id;
+    return `<div class="pub-card" onclick="openPublicRecipe('${r.id}')">
+      <span class="pub-emoji">${r.emoji||'🍽'}</span>
+      <div class="pub-body">
+        <div class="pub-name">${escapeHtml(r.name)}${mine?'<span class="pub-mine">自分</span>':''}</div>
+        <div class="pub-meta">${r.genre||'他'}・材料${(r.ingredients||[]).length}・手順${(r.steps||[]).length}</div>
+      </div>
+      <span class="pub-arrow">›</span>
+    </div>`;
+  }).join('');
+}
+let publicViewItem = null;
+function openPublicRecipe(id){
+  const r = publicCache.find(x=>x.id===id); if(!r) return;
+  publicViewItem = toRecipeShape(r); publicViewItem.isPublicView = true;
+  closePublic();
+  setTimeout(()=>openModalDirect(publicViewItem), 150);
+}
+function openModalDirect(r){
+  modalServings = servings; renderModal(r);
+  document.getElementById('modalBg').classList.add('show');
+  document.getElementById('modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+/* ---- 起動時 ---- */
+async function bootSupabase(){
+  const ok = initSupabase(); updateAccountIcon();
+  if(!ok || !supa){ return; }
+  try{
+    const { data } = await supa.auth.getSession();
+    if(data && data.session && data.session.user){
+      currentUser = data.session.user;
+      await fetchMyCloudRecipes(); updateAccountIcon(); updateBadges();
+    }
+  }catch(e){ console.warn('セッション復元失敗', e); }
+}
+bootSupabase();
+</script>
+</body>
+</html>
